@@ -1,0 +1,14 @@
+{
+  "app": {
+    "secretKey": "auth_using_JWT_youtube",
+    "tokenExpireInSeconds": 600
+  },
+  "database": {
+    "username": "postgres",
+    "password": "root",
+    "database": "youtube",
+    "host": "localhost",
+    "post": 5432,
+    "dialect": "postgres"
+  }
+}
