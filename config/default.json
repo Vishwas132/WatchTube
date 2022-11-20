@@ -6,7 +6,7 @@
   "database": {
     "username": "postgres",
     "password": "root",
-    "database": "youtube",
+    "database": "YouTube",
     "host": "localhost",
     "post": 5432,
     "dialect": "postgres"
