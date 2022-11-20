@@ -1,18 +1,20 @@
 import { Router } from "express";
-import * as videoController from "../controllers/videoController.js";
+import * as videosController from "../controllers/videosController.js";
 
 const video = Router();
 
-video.get("/", videoController.getVideos);
+video.get("/home", videosController.getVideos);
 
-video.post("/:id", videoController.getVideoById);
+video.get("/:id", videosController.getVideoById);
 
-video.post("/upload", videoController.uploadVideo);
+video.post("/upload", videosController.uploadVideo);
 
-video.delete("/:id", videoController.deleteVideoById);
+video.delete("/:id", videosController.deleteVideoById);
 
-video.put("/like", videoController.likeVideo);
+// video.get("/play/:id", videosController.playVideoById);
 
-video.put("/dislike", videoController.dislikeVideo);
+video.put("/:id/like", videosController.likeVideoById);
+
+video.put("/:id/dislike", videosController.dislikeVideoById);
 
 export default video;
