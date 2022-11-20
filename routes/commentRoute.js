@@ -1,16 +1,16 @@
 import { Router } from "express";
-import * as commentController from "../controllers/commentController.js";
+import * as commentsController from "../controllers/commentsController.js";
 
 const comment = Router();
 
-comment.post("/:id", commentController.getCommentById);
+comment.get("/:id", commentsController.getCommentsByVideo);
 
-comment.post("/", commentController.postComment);
+comment.post("/", commentsController.postComment);
 
-comment.delete("/:id", commentController.deleteCommentById);
+comment.delete("/:id", commentsController.deleteCommentById);
 
-// comment.put("/like", commentController.likeComment);
+// comment.put("/like", commentsController.likeComment);
 
-// comment.put("/dislike", commentController.dislikeComment);
+// comment.put("/dislike", commentsController.dislikeComment);
 
 export default comment;
