@@ -1,4 +1,4 @@
-import { readdirSync } from "fs";
+import { readdir } from "fs/promises";
 import { basename, dirname } from "path";
 import { Sequelize, DataTypes } from "sequelize";
 import { fileURLToPath } from "url";
@@ -19,8 +19,9 @@ const sequelize = new Sequelize(database, username, password, {
   ...dbConfig,
 });
 
+const files = await readdir(__dirname);
 await Promise.all(
-  readdirSync(__dirname)
+  files
     .filter((file) => {
       return (
         file.indexOf(".") !== 0 &&
@@ -32,7 +33,7 @@ await Promise.all(
       const model = await import(`./${file}`);
       const namedModel = model.default(sequelize, DataTypes);
       db[namedModel.name] = namedModel;
-      // return namedModel;
+      // return db;
     })
 );
 
