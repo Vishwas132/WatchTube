@@ -1,6 +1,5 @@
 import { Router } from "express";
 import comment from "./commentRoute.js";
-import session from "./sessionRoute.js";
 import user from "./userRoute.js";
 import video from "./videoRoute.js";
 
@@ -19,7 +18,5 @@ route.use("/user", user);
 route.use("/video", video);
 
 route.use("/comment", comment);
-
-route.use("/session", session);
 
 export default route;
