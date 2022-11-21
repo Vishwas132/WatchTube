@@ -2,6 +2,8 @@ import * as video from "./../services/videos.js";
 
 const uploadVideo = async (req, res) => {
   try {
+    console.log("req.file", req.file);
+    req.body.videoUrl = req.file.filename;
     const videoObj = await video.newVideo(req.body);
     return res.status(200).json(videoObj);
   } catch (error) {
