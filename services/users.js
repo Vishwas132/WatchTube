@@ -1,4 +1,8 @@
-import { createToken } from "../middlewares/utils.js";
+import {
+  createToken,
+  getPasswordHash,
+  verifyPassword,
+} from "../utils/utils.js";
 import db from "../models/index.js";
 
 const createNewUser = async (req) => {
@@ -8,6 +12,32 @@ const createNewUser = async (req) => {
     return { userId: userId, token: token };
   } catch (error) {
     throw { error };
+  }
+};
+
+const signIn = async (body) => {
+  try {
+    const { email, password } = body;
+    const { passwordHash } = await getUser(email);
+    return await verifyPassword(password, passwordHash);
+  } catch (error) {
+    console.log("error", error);
+    throw "Db error while executing query";
+  }
+};
+
+const getUser = async (email) => {
+  try {
+    const obj = await db.Users.findAll({
+      where: {
+        email: email,
+      },
+      raw: true,
+    });
+    return obj[0];
+  } catch (error) {
+    console.log("error", error);
+    throw "Db error while executing query";
   }
 };
 
@@ -39,9 +69,10 @@ const getProfileById = async (userId) => {
   }
 };
 
-const newUser = async ({ email, passwordHash }) => {
+const newUser = async ({ email, password }) => {
   try {
     const sessionToken = createToken({ email });
+    const passwordHash = await getPasswordHash(password);
     const obj = await db.Users.create({ email, passwordHash, sessionToken });
     return { userId: obj.dataValues.id, token: sessionToken };
   } catch (error) {
@@ -65,4 +96,4 @@ const newUserProfile = async (userId, ...body) => {
   }
 };
 
-export { createNewUser, deleteUserById, getProfileById };
+export { createNewUser, deleteUserById, getProfileById, signIn };

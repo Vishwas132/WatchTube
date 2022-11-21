@@ -3,10 +3,21 @@ import * as user from "../services/users.js";
 const signupUser = async (req, res) => {
   try {
     const userObj = await user.createNewUser(req);
-    res.status(200).json(userObj);
+    return res.status(200).json(userObj);
   } catch (error) {
     console.log("error", error);
     return res.status(500).json({ error: error });
+  }
+};
+
+const signInUser = async (req, res) => {
+  try {
+    const userSignedIn = await user.signIn(req.body);
+    if (!userSignedIn) throw "Wrong email or password";
+    return res.status(200).json("User signed in");
+  } catch (error) {
+    console.log("error", error);
+    return res.status(401).json(error);
   }
 };
 
@@ -38,4 +49,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { getUserProfile, signupUser, deleteUser };
+export { getUserProfile, signupUser, deleteUser, signInUser };

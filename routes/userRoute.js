@@ -7,7 +7,7 @@ user.get("/profile/:id", usersController.getUserProfile);
 
 user.post("/signup", usersController.signupUser);
 
-// user.post("/signin", usersController.signInUser);
+user.post("/signin", usersController.signInUser);
 
 // user.delete("/signout", usersController.signOutUser);
 
