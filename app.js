@@ -1,12 +1,14 @@
 import express from "express";
 import route from "./routes/index.js";
 import db from "./models/index.js";
+import cors from "cors";
 
 const app = express();
 let port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 app.use(route);
 
 db.sequelize
