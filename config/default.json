@@ -1,6 +1,7 @@
 {
   "app": {
-    "secretKey": "auth_using_JWT_youtube",
+    "accessTokenSecretKey": "access_token_JWT",
+    "refreshTokenSecretKey": "refresh_token_JWT",
     "tokenExpireInSeconds": 600
   },
   "database": {

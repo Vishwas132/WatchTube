@@ -1,7 +1,8 @@
 import { Router } from "express";
-import comment from "./commentRoute.js";
 import user from "./userRoute.js";
+import session from "./sessionRoute.js";
 import video from "./videoRoute.js";
+import comment from "./commentRoute.js";
 import favorite from "./favoriteRoute.js";
 
 const route = Router();
@@ -15,6 +16,8 @@ route.get("/", (req, res) => {
 });
 
 route.use("/user", user);
+
+route.use("/session", session);
 
 route.use("/video", video);
 

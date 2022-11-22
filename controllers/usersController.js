@@ -10,21 +10,10 @@ const signupUser = async (req, res) => {
   }
 };
 
-const signInUser = async (req, res) => {
-  try {
-    const userSignedIn = await user.signIn(req.body);
-    if (!userSignedIn) throw "Wrong email or password";
-    return res.status(200).json("User signed in");
-  } catch (error) {
-    console.log("error", error);
-    return res.status(401).json(error);
-  }
-};
-
 const getUserProfile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userObj = await user.getProfileById(id);
+    const { email } = req.body;
+    const userObj = await user.getProfileById(email);
     if (userObj === undefined) throw Error("No user");
     return res.status(200).json({
       userProfile: userObj,
@@ -49,4 +38,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { getUserProfile, signupUser, deleteUser, signInUser };
+export { getUserProfile, signupUser, deleteUser };

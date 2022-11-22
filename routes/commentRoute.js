@@ -1,13 +1,18 @@
 import { Router } from "express";
 import * as commentsController from "../controllers/commentsController.js";
+import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const comment = Router();
 
 comment.get("/:id", commentsController.getCommentsByVideo);
 
-comment.post("/", commentsController.postComment);
+comment.post("/", sessionAuthenticate, commentsController.postComment);
 
-comment.delete("/:id", commentsController.deleteCommentById);
+comment.delete(
+  "/:id",
+  sessionAuthenticate,
+  commentsController.deleteCommentById
+);
 
 // comment.put("/like", commentsController.likeComment);
 

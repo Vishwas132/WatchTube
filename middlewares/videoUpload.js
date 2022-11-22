@@ -35,7 +35,7 @@ const multerFilter = (req, file, cb) => {
   if (extArr.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new Error("Not a PDF File!!"), false);
+    cb(new Error("Not a video File!!"), false);
   }
 };
 

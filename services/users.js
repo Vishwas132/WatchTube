@@ -1,43 +1,21 @@
 import {
-  createToken,
+  createAccessToken,
+  createRefreshToken,
   getPasswordHash,
-  verifyPassword,
 } from "../utils/utils.js";
 import db from "../models/index.js";
 
 const createNewUser = async (req) => {
   try {
-    const { userId, token } = await newUser(req.body);
+    const { userId, accessToken, refreshToken } = await newUser(req.body);
     await newUserProfile(userId, req.body);
-    return { userId: userId, token: token };
+    return {
+      userId: userId,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   } catch (error) {
     throw { error };
-  }
-};
-
-const signIn = async (body) => {
-  try {
-    const { email, password } = body;
-    const { passwordHash } = await getUser(email);
-    return await verifyPassword(password, passwordHash);
-  } catch (error) {
-    console.log("error", error);
-    throw "Db error while executing query";
-  }
-};
-
-const getUser = async (email) => {
-  try {
-    const obj = await db.Users.findAll({
-      where: {
-        email: email,
-      },
-      raw: true,
-    });
-    return obj[0];
-  } catch (error) {
-    console.log("error", error);
-    throw "Db error while executing query";
   }
 };
 
@@ -55,11 +33,11 @@ const deleteUserById = async (userId) => {
   }
 };
 
-const getProfileById = async (userId) => {
+const getProfileById = async (email) => {
   try {
     const obj = await db.UsersProfile.findAll({
       where: {
-        userId: userId,
+        email: email,
       },
     });
     return obj?.[0]?.dataValues;
@@ -71,10 +49,19 @@ const getProfileById = async (userId) => {
 
 const newUser = async ({ email, password }) => {
   try {
-    const sessionToken = createToken({ email });
+    const accessToken = createAccessToken({ email });
+    const refreshToken = createRefreshToken({ email });
     const passwordHash = await getPasswordHash(password);
-    const obj = await db.Users.create({ email, passwordHash, sessionToken });
-    return { userId: obj.dataValues.id, token: sessionToken };
+    const obj = await db.Users.create({
+      email,
+      passwordHash,
+      refreshToken: refreshToken,
+    });
+    return {
+      userId: obj.dataValues.id,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
   } catch (error) {
     console.log("error", error);
     throw "Db error while executing query";
@@ -96,4 +83,4 @@ const newUserProfile = async (userId, ...body) => {
   }
 };
 
-export { createNewUser, deleteUserById, getProfileById, signIn };
+export { createNewUser, deleteUserById, getProfileById };

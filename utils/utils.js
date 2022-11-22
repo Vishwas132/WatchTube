@@ -19,22 +19,30 @@ const verifyPassword = async (password, passwordHash) => {
   return crypto.timingSafeEqual(keyBuffer, derivedKey);
 };
 
-const createToken = (data) => {
-  return jwt.sign(data, jsonObj.app.secretKey, {
+const createAccessToken = (data) => {
+  return jwt.sign(data, jsonObj.app.accessTokenSecretKey, {
     expiresIn: jsonObj.app.tokenExpireInSeconds,
   });
 };
 
-const verifyToken = (token) => {
-  return jwt.verify(token, jsonObj.app.secretKey);
+const createRefreshToken = (data) => {
+  return jwt.sign(data, jsonObj.app.refreshTokenSecretKey);
+};
+
+const verifyAccessToken = (token) => {
+  return jwt.verify(token, jsonObj.app.accessTokenSecretKey);
+};
+
+const verifyRefreshToken = (token) => {
+  return jwt.verify(token, jsonObj.app.refreshTokenSecretKey);
 };
 
 const getToken = (req) => {
   try {
     let header = req.headers["x-access-token"] || req.headers["authorization"];
     if (header && header.startsWith("Bearer ")) {
-      let token = header.slice(7);
-      return token;
+      let accessToken = header.slice(7);
+      return accessToken;
     } else {
       throw "Invalid Token";
     }
@@ -43,4 +51,12 @@ const getToken = (req) => {
   }
 };
 
-export { createToken, verifyToken, getToken, getPasswordHash, verifyPassword };
+export {
+  createAccessToken,
+  createRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  getToken,
+  getPasswordHash,
+  verifyPassword,
+};

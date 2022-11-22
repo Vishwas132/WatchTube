@@ -20,11 +20,10 @@ export default (sequelize, DataTypes) => {
         unique: true,
         field: "password_hash",
       },
-      sessionToken: {
+      refreshToken: {
         type: DataTypes.TEXT,
-        allowNull: false,
         unique: true,
-        field: "session_token",
+        field: "refresh_token",
       },
     },
     {
