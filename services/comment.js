@@ -40,4 +40,19 @@ const deleteComment = async (id) => {
   }
 };
 
-export { newComment, getComments, deleteComment };
+const editComment = async (id, body) => {
+  try {
+    const obj = await db.Comments.update(body, {
+      where: {
+        id: id,
+      },
+      returning: true,
+    });
+    return obj;
+  } catch (error) {
+    console.log("error", error);
+    throw "Error while querying database";
+  }
+};
+
+export { newComment, getComments, deleteComment, editComment };

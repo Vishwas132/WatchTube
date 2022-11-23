@@ -1,4 +1,4 @@
-import * as favorite from "../services/favorites.js";
+import * as favorite from "../services/favorite.js";
 
 const addFavorite = async (req, res) => {
   try {

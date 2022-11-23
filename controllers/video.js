@@ -1,4 +1,4 @@
-import * as video from "./../services/videos.js";
+import * as video from "../services/video.js";
 
 const uploadVideo = async (req, res) => {
   try {

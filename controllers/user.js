@@ -1,4 +1,4 @@
-import * as user from "../services/users.js";
+import * as user from "../services/user.js";
 
 const signupUser = async (req, res) => {
   try {

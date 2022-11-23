@@ -1,9 +1,9 @@
 import { Router } from "express";
-import user from "./userRoute.js";
-import session from "./sessionRoute.js";
-import video from "./videoRoute.js";
-import comment from "./commentRoute.js";
-import favorite from "./favoriteRoute.js";
+import user from "./user.js";
+import session from "./session.js";
+import video from "./video.js";
+import comment from "./comment.js";
+import favorite from "./favorite.js";
 
 const route = Router();
 

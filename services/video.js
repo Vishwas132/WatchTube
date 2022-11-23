@@ -50,7 +50,6 @@ const likeVideo = async (id) => {
       where: { id: id },
       plain: true,
     });
-    console.log("obj", obj[0][0]);
     return obj[0][0];
   } catch (error) {
     console.log("error", error);
@@ -64,7 +63,6 @@ const dislikeVideo = async (id) => {
       where: { id: id },
       plain: true,
     });
-    console.log("obj", obj[0][0]);
     return obj[0][0];
   } catch (error) {
     console.log("error", error);

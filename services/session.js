@@ -10,22 +10,16 @@ const signIn = async (body) => {
   try {
     const { email, password } = body;
     const { passwordHash } = await getUser(email);
+    if (passwordHash === undefined) throw "User not registered";
     const isRegistered = await verifyPassword(password, passwordHash);
-    if (!isRegistered) throw new Error("Email or password wrong");
+    if (!isRegistered) throw "Email or password wrong";
     const accessToken = createAccessToken({ email });
     const refreshToken = createRefreshToken({ email });
-    await db.Users.update(
-      {
-        refreshToken: refreshToken,
-      },
-      {
-        where: { email: email },
-      }
-    );
+    await updateRefreshToken(email);
     return { accessToken: accessToken, refreshToken: refreshToken };
   } catch (error) {
     console.log("error", error);
-    throw "Db error while executing query";
+    throw error;
   }
 };
 
@@ -38,6 +32,22 @@ const getUser = async (email) => {
       raw: true,
     });
     return obj[0];
+  } catch (error) {
+    console.log("error", error);
+    throw "Db error while executing query";
+  }
+};
+
+const updateRefreshToken = async (email) => {
+  try {
+    await db.Users.update(
+      {
+        refreshToken: refreshToken,
+      },
+      {
+        where: { email: email },
+      }
+    );
   } catch (error) {
     console.log("error", error);
     throw "Db error while executing query";

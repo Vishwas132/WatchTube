@@ -1,4 +1,4 @@
-import * as comment from "../services/comments.js";
+import * as comment from "../services/comment.js";
 
 const postComment = async (req, res) => {
   try {
@@ -13,7 +13,7 @@ const postComment = async (req, res) => {
 const getCommentsByVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    const commentObj = await comment.getComments(id);
+    const commentObj = await comment.getComments(id, req.body);
     if (commentObj?.[0] === undefined) throw Error("No comment");
     return res.status(200).json(commentObj);
   } catch (error) {
@@ -34,4 +34,16 @@ const deleteCommentById = async (req, res) => {
   }
 };
 
-export { postComment, getCommentsByVideo, deleteCommentById };
+const editCommentById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const commentObj = await comment.editComment(id, req.body);
+    if (!commentObj[0]) throw Error("No comment");
+    return res.status(200).json(`Comment with id=${id} edited`);
+  } catch (error) {
+    console.log("error", error);
+    return res.status(404).json(error.message);
+  }
+};
+
+export { postComment, getCommentsByVideo, deleteCommentById, editCommentById };
