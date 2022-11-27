@@ -20,9 +20,14 @@ const verifyPassword = async (password, passwordHash) => {
 };
 
 const createAccessToken = (data) => {
-  return jwt.sign(data, jsonObj.app.accessTokenSecretKey, {
+  const token = jwt.sign(data, jsonObj.app.accessTokenSecretKey, {
     expiresIn: jsonObj.app.tokenExpireInSeconds,
   });
+  const payload = jwt.decode(token);
+  return {
+    accessToken: token,
+    accessTokenExpiry: payload.exp,
+  };
 };
 
 const createRefreshToken = (data) => {
@@ -37,17 +42,21 @@ const verifyRefreshToken = (token) => {
   return jwt.verify(token, jsonObj.app.refreshTokenSecretKey);
 };
 
-const getToken = (req) => {
+const getRefreshToken = (req) => {
+  return req.cookies.sessionToken;
+};
+
+const getAccessToken = (req) => {
   try {
-    let header = req.headers["x-access-token"] || req.headers["authorization"];
+    const header = req.headers["authorization"];
     if (header && header.startsWith("Bearer ")) {
-      let accessToken = header.slice(7);
-      return accessToken;
+      const token = header.slice(7);
+      return token;
     } else {
-      throw "Invalid Token";
+      throw "Invalid Access token";
     }
   } catch (error) {
-    throw { error: "Invalid Token" };
+    throw "Invalid Token";
   }
 };
 
@@ -56,7 +65,8 @@ export {
   createRefreshToken,
   verifyAccessToken,
   verifyRefreshToken,
-  getToken,
+  getAccessToken,
+  getRefreshToken,
   getPasswordHash,
   verifyPassword,
 };

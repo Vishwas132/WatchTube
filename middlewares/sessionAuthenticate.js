@@ -1,17 +1,23 @@
-import { getToken, verifyAccessToken } from "../utils/utils.js";
-import { getProfileById } from "../services/user.js";
+import { getAccessToken, verifyAccessToken } from "../utils/utils.js";
+import { getUser } from "../services/session.js";
 
 const sessionAuthenticate = async (req, res, next) => {
   try {
-    const accessToken = getToken(req);
-    const payload = verifyAccessToken(accessToken);
-    if (payload?.email === undefined) throw "Invalid token";
-    const userObj = await getProfileById(payload.email);
-    if (userObj?.email === undefined) throw "Not found";
+    const token = getAccessToken(req);
+    const payload = verifyAccessToken(token);
+    if (payload?.email === undefined) return res.sendStatus(401);
+    const userObj = await getUser(payload.email);
+    if (
+      userObj?.email === undefined ||
+      userObj?.signedIn === false ||
+      payload.email !== req.body.email
+    ) {
+      return res.sendStatus(404);
+    }
     next();
   } catch (error) {
-    console.log("error", error);
-    return res.status(401).json({ error: error });
+    console.trace("error", error);
+    return res.status(500).json(error);
   }
 };
 

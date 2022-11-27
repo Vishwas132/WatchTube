@@ -1,24 +1,32 @@
 import * as session from "../services/session.js";
+import { getRefreshToken } from "../utils/utils.js";
 
 const signInUser = async (req, res) => {
   try {
-    const refreshToken = await session.signIn(req.body);
-    return res.status(200).json(refreshToken);
+    const tokenObj = await session.signIn(req.body);
+    res.cookie("sessionToken", tokenObj.refreshToken, {
+      maxAge: 86400000,
+      httpOnly: false,
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
+    return res.status(200).json(tokenObj);
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     return res.status(401).json(error);
   }
 };
 
 const generateAccessToken = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-    if (refreshToken === null) res.sendStatus(400);
-    const token = await session.generateToken(refreshToken);
-    if (token === undefined) return res.sendStatus(403);
-    return res.status(200).json({ accessToken: token });
+    const refreshToken = getRefreshToken(req);
+    if (!refreshToken) return res.sendStatus(400);
+    const tokenObj = await session.generateToken(refreshToken);
+    if (!tokenObj?.accessToken) return res.sendStatus(403);
+    return res.status(200).json(tokenObj);
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     return res.status(401).json(error);
   }
 };
@@ -26,10 +34,10 @@ const generateAccessToken = async (req, res) => {
 const signOutUser = async (req, res) => {
   try {
     const { email } = req.body;
-    await session.signOut(email);
-    return res.status(200).json("User signed out");
+    const signOutObj = await session.signOut(email);
+    return res.status(200).json(signOutObj[0]);
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     return res.status(401).json(error);
   }
 };

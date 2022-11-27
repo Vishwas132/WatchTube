@@ -4,10 +4,12 @@ import {
   getPasswordHash,
 } from "../utils/utils.js";
 import db from "../models/index.js";
+import puppeteer from "puppeteer";
 
-const newUser = async ({ email, password }, t) => {
+const newUser = async (body, t) => {
   try {
-    const accessToken = createAccessToken({ email });
+    const { email, password } = body;
+    const tokenObj = createAccessToken({ email });
     const refreshToken = createRefreshToken({ email });
     const passwordHash = await getPasswordHash(password);
     const obj = await db.Users.create(
@@ -15,23 +17,25 @@ const newUser = async ({ email, password }, t) => {
         email,
         passwordHash,
         refreshToken: refreshToken,
+        signedIn: true,
       },
       { transaction: t }
     );
     return {
       userId: obj.dataValues.id,
-      accessToken: accessToken,
+      accessToken: tokenObj.accessToken,
+      accessTokenExpiry: tokenObj.accessTokenExpiry,
       refreshToken: refreshToken,
     };
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
 
 const newUserProfile = async (userId, t, ...body) => {
   try {
-    const { username } = body[0];
+    const { username, email } = body[0];
     const obj = await db.UsersProfile.create(
       {
         userId,
@@ -42,7 +46,7 @@ const newUserProfile = async (userId, t, ...body) => {
     );
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
@@ -50,16 +54,19 @@ const newUserProfile = async (userId, t, ...body) => {
 const createNewUser = async (req) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const { userId, accessToken, refreshToken } = await newUser(req.body, t);
+      const { userId, accessToken, accessTokenExpiry, refreshToken } =
+        await newUser(req.body, t);
       await newUserProfile(userId, t, req.body);
       return {
         userId: userId,
         accessToken: accessToken,
+        accessTokenExpiry: accessTokenExpiry,
         refreshToken: refreshToken,
       };
     });
     return result;
   } catch (error) {
+    console.trace("error", error);
     throw error;
   }
 };
@@ -73,7 +80,7 @@ const deleteUserById = async (userId) => {
     });
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
@@ -87,9 +94,56 @@ const getProfileById = async (email) => {
     });
     return obj?.[0]?.dataValues;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
 
-export { createNewUser, deleteUserById, getProfileById };
+const getPdfReport = async (req) => {
+  try {
+    const { pageUrl } = req.body;
+    const browser = await puppeteer.launch({
+      // headless: false,
+      dumpio: true,
+    });
+    const page = await browser.newPage();
+    await page.setExtraHTTPHeaders({
+      "authorization": req.headers.authorization,
+      "cookie": req.headers.cookie,
+    });
+    await page.setRequestInterception(true);
+    page.on("request", async (request) => {
+      // Do nothing in case of non-navigation requests.
+      // if (!request.isNavigationRequest()) {
+      //   request.continue();
+      //   return;
+      // }
+      request.continue({
+        "postData": JSON.stringify({ email: req.body.email }),
+      });
+    });
+
+    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+    // navigate to the website
+    await page.goto(pageUrl, {
+      waitUntil: "networkidle2",
+    });
+
+    await page.evaluate(() => {
+      const nav = document.querySelector("nav");
+      nav.remove();
+    });
+    const pdf = await page.pdf({
+      // path: "files/reports/report.pdf",
+      displayHeaderFooter: false,
+      format: "a4",
+    });
+    await browser.close();
+    return pdf;
+  } catch (error) {
+    console.trace("error", error);
+    throw "Db error while executing query";
+  }
+};
+
+export { createNewUser, deleteUserById, getProfileById, getPdfReport };
