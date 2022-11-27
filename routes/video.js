@@ -16,10 +16,10 @@ video.post(
   videos.uploadVideo
 );
 
-video.delete("/:id", sessionAuthenticate, videos.deleteVideoById);
+video.delete("/delete", sessionAuthenticate, videos.deleteVideoById);
 
-video.put("/:id/like", sessionAuthenticate, videos.likeVideoById);
+video.put("/like", sessionAuthenticate, videos.likeVideoById);
 
-video.put("/:id/dislike", sessionAuthenticate, videos.dislikeVideoById);
+video.put("/dislike", sessionAuthenticate, videos.dislikeVideoById);
 
 export default video;

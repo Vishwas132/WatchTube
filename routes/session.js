@@ -1,12 +1,15 @@
 import { Router } from "express";
 import * as sessions from "../controllers/session.js";
 import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
+import multer from "multer";
+
+const upload = multer();
 
 const session = Router();
 
-session.get("/signin", sessions.signInUser);
+session.post("/signin", upload.none(), sessions.signInUser);
 
-session.get("/token", sessions.generateAccessToken);
+session.post("/token", sessions.generateAccessToken);
 
 session.put("/signout", sessionAuthenticate, sessions.signOutUser);
 
