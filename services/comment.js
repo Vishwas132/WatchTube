@@ -2,10 +2,22 @@ import db from "../models/index.js";
 
 const newComment = async (body) => {
   try {
-    const obj = await db.Comments.create(body);
-    return obj?.dataValues;
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Comments.create(body, { transaction: t });
+      await db.UserProfile.increment(
+        "commentsCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj?.dataValues;
+    });
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
@@ -20,22 +32,37 @@ const getComments = async (id) => {
     });
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
 
 const deleteComment = async (id) => {
   try {
-    const obj = await db.Comments.destroy({
-      where: {
-        id: id,
-      },
-      returning: true,
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Comments.destroy(
+        {
+          where: {
+            id: id,
+          },
+          returning: true,
+        },
+        { transaction: t }
+      );
+      await db.UserProfile.decrement(
+        "commentsCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj;
     });
-    return obj;
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
@@ -50,7 +77,7 @@ const editComment = async (id, body) => {
     });
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };

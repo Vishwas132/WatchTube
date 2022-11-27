@@ -3,7 +3,7 @@ import crypto from "crypto";
 
 const multerStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "files/uploads/");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = crypto.randomBytes(16).toString("hex");

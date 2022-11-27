@@ -2,10 +2,22 @@ import db from "../models/index.js";
 
 const addFavoriteById = async (body) => {
   try {
-    const obj = await db.Favorites.create(body);
-    return obj?.dataValues;
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Favorites.create(body, { transaction: t });
+      await db.UserProfile.increment(
+        "favoritesCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj?.dataValues;
+    });
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
@@ -20,22 +32,37 @@ const getFavorites = async (userId) => {
     });
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };
 
-const removeFavoriteById = async ({ userId, videoId }) => {
+const removeFavoriteById = async (body) => {
   try {
-    const obj = await db.Favorites.destroy({
-      where: {
-        userId: userId,
-        videoId: videoId,
-      },
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Favorites.destroy(
+        {
+          where: {
+            userId: body.userId,
+            videoId: body.videoId,
+          },
+        },
+        { transaction: t }
+      );
+      await db.UserProfile.decrement(
+        "favoritesCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj;
     });
-    return obj;
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Db error while executing query";
   }
 };

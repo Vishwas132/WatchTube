@@ -2,15 +2,10 @@ export default (sequelize, DataTypes) => {
   const UsersProfile = sequelize.define(
     "UsersProfile",
     {
-      id: {
-        field: "id",
-        type: DataTypes.BIGINT,
-        autoIncrement: true,
-        primaryKey: true,
-      },
       userId: {
         field: "user_id",
         type: DataTypes.BIGINT,
+        primaryKey: true,
         references: {
           model: "Users",
           key: "id",
@@ -38,6 +33,21 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         default: 0,
         field: "comments_count",
+      },
+      likesCount: {
+        type: DataTypes.BIGINT,
+        default: 0,
+        field: "likes_count",
+      },
+      dislikesCount: {
+        type: DataTypes.BIGINT,
+        default: 0,
+        field: "dislikes_count",
+      },
+      favoritesCount: {
+        type: DataTypes.BIGINT,
+        default: 0,
+        field: "favorites_count",
       },
     },
     {

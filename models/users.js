@@ -25,6 +25,11 @@ export default (sequelize, DataTypes) => {
         unique: true,
         field: "refresh_token",
       },
+      signedIn: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        field: "signed_in",
+      },
     },
     {
       schema: "data",

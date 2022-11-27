@@ -2,10 +2,22 @@ import db from "../models/index.js";
 
 const newVideo = async (body) => {
   try {
-    const obj = await db.Videos.create(body);
-    return obj?.dataValues;
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Videos.create(body, { transaction: t });
+      await db.UserProfile.increment(
+        "videosCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj?.dataValues;
+    });
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
@@ -15,7 +27,7 @@ const getAllVideos = async () => {
     const obj = await db.Videos.findAll({ raw: true });
     return obj;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
@@ -25,47 +37,94 @@ const getVideo = async (id) => {
     const obj = await db.Videos.findByPk(id);
     return obj?.dataValues;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
 
-const deleteVideo = async (id) => {
+const deleteVideo = async (body) => {
   try {
-    const obj = await db.Videos.destroy({
-      where: {
-        id: id,
-      },
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Videos.destroy(
+        {
+          where: {
+            id: body.id,
+          },
+        },
+        { transaction: t }
+      );
+      await db.UserProfile.decrement(
+        "videosCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj;
     });
-    return obj;
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
 
-const likeVideo = async (id) => {
+const likeVideo = async (body) => {
   try {
-    const obj = await db.Videos.increment("likesCount", {
-      where: { id: id },
-      plain: true,
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Videos.increment(
+        "likesCount",
+        {
+          where: { id: body.id },
+          plain: true,
+        },
+        { transaction: t }
+      );
+      await db.UserProfile.increment(
+        "likesCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj[0][0];
     });
-    return obj[0][0];
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
 
 const dislikeVideo = async (id) => {
   try {
-    const obj = await db.Videos.increment("dislikesCount", {
-      where: { id: id },
-      plain: true,
+    const result = await db.sequelize.transaction(async (t) => {
+      const obj = await db.Videos.increment(
+        "dislikesCount",
+        {
+          where: { id: id },
+          plain: true,
+        },
+        { transaction: t }
+      );
+      await db.UserProfile.increment(
+        "dislikesCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      return obj[0][0];
     });
-    return obj[0][0];
+    return result;
   } catch (error) {
-    console.log("error", error);
+    console.trace("error", error);
     throw "Error while querying database";
   }
 };
