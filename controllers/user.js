@@ -41,4 +41,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { getUserProfile, signupUser, deleteUser };
+const generateUserReport = async (req, res) => {
+  try {
+    const pdf = await user.getPdfReport(req);
+    if (!pdf) return res.sendStatus(404);
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-length": pdf.length,
+    });
+    return res.status(200).send(pdf);
+  } catch (error) {
+    console.trace("error", error);
+    return res.status(500).json(error);
+  }
+};
+
+export { getUserProfile, signupUser, deleteUser, generateUserReport };
