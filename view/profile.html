@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="profile.js" defer></script>
+    <script type="module" src="savePdf.js" defer></script>
+    <script type="module" src="logout.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <button name="pdf" type="button" id="pdf">Generate PDF report</button>
+        <button name="logout" type="button" id="logout">Log out</button>
+      </nav>
+    </header>
+    <h1>User Report</h1>
+    <div id="username"><strong>User name:</strong></div>
+    <div id="videosCount"><strong>Total videos uploaded by user:</strong></div>
+    <div id="commentsCount"><strong>Total comments by user:</strong></div>
+    <div id="likesCount"><strong>Total liked videos by user:</strong></div>
+    <div id="dislikesCount">
+      <strong>Total disliked videos by user:</strong>
+    </div>
+    <div id="favoritesCount"><strong>Total favorited videos:</strong></div>
+  </body>
+</html>
