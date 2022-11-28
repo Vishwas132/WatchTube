@@ -6,7 +6,6 @@ const signInUser = async (req, res) => {
     const tokenObj = await session.signIn(req.body);
     res.cookie("sessionToken", tokenObj.refreshToken, {
       maxAge: 86400000,
-      httpOnly: false,
       sameSite: "none",
       secure: true,
       httpOnly: true,

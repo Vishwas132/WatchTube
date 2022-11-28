@@ -4,7 +4,7 @@ const addFavoriteById = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Favorites.create(body, { transaction: t });
-      await db.UserProfile.increment(
+      await db.UsersProfile.increment(
         "favoritesCount",
         {
           where: {
@@ -49,7 +49,7 @@ const removeFavoriteById = async (body) => {
         },
         { transaction: t }
       );
-      await db.UserProfile.decrement(
+      await db.UsersProfile.decrement(
         "favoritesCount",
         {
           where: {

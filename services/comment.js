@@ -4,7 +4,16 @@ const newComment = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Comments.create(body, { transaction: t });
-      await db.UserProfile.increment(
+      await db.UsersProfile.increment(
+        "commentsCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      await db.Videos.increment(
         "commentsCount",
         {
           where: {
@@ -37,19 +46,28 @@ const getComments = async (id) => {
   }
 };
 
-const deleteComment = async (id) => {
+const deleteComment = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Comments.destroy(
         {
           where: {
-            id: id,
+            id: body.id,
           },
           returning: true,
         },
         { transaction: t }
       );
-      await db.UserProfile.decrement(
+      await db.UsersProfile.decrement(
+        "commentsCount",
+        {
+          where: {
+            userId: body.userId,
+          },
+        },
+        { transaction: t }
+      );
+      await db.Videos.decrement(
         "commentsCount",
         {
           where: {

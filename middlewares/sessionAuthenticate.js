@@ -7,13 +7,10 @@ const sessionAuthenticate = async (req, res, next) => {
     const payload = verifyAccessToken(token);
     if (payload?.email === undefined) return res.sendStatus(401);
     const userObj = await getUser(payload.email);
-    if (
-      userObj?.email === undefined ||
-      userObj?.signedIn === false ||
-      payload.email !== req.body.email
-    ) {
+    if (userObj?.email === undefined || userObj?.signedIn === false) {
       return res.sendStatus(404);
     }
+    req.body.email = payload.email;
     next();
   } catch (error) {
     console.trace("error", error);

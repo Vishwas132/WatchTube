@@ -5,7 +5,7 @@ import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const video = Router();
 
-video.get("/home", videos.getVideos);
+video.get("/all", videos.getVideos);
 
 video.get("/:id", videos.getVideoById);
 

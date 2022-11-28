@@ -8,7 +8,7 @@ comment.get("/:id", comments.getCommentsByVideo);
 
 comment.post("/", sessionAuthenticate, comments.postComment);
 
-comment.delete("/:id", sessionAuthenticate, comments.deleteCommentById);
+comment.delete("/delete", sessionAuthenticate, comments.deleteCommentById);
 
 comment.put("/:id", sessionAuthenticate, comments.editCommentById);
 
