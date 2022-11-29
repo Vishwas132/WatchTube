@@ -1,19 +1,18 @@
 import { checkTokenValidity } from "./refreshToken.js";
 
 async function fetchPdf() {
-  const response = await fetch("http://localhost:3000/user/profile/report", {
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-    body: JSON.stringify({
-      pageUrl: document.URL,
-      email: localStorage.getItem("email"),
-    }),
-  });
+  const response = await fetch(
+    `http://localhost:3000/user/profile/report?url=${document.URL}`,
+    {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response;
 }
 

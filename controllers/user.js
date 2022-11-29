@@ -1,16 +1,21 @@
 import * as user from "../services/user.js";
+import config from "../config/default.json" assert { type: "json" };
 
 const signupUser = async (req, res) => {
   try {
-    const userObj = await user.createNewUser(req);
-    res.cookie("sessionToken", tokenObj.refreshToken, {
-      maxAge: 86400000,
-      httpOnly: false,
+    const { userId, accessToken, accessTokenExpiry, refreshToken } =
+      await user.createNewUser(req);
+    res.cookie("sessionToken", refreshToken, {
+      maxAge: config.app.sessionExpiresInMilliseconds,
       sameSite: "none",
       secure: true,
       httpOnly: true,
     });
-    return res.status(200).json(userObj);
+    return res.status(200).json({
+      userId: userId,
+      accessToken: accessToken,
+      accessTokenExpiry: accessTokenExpiry,
+    });
   } catch (error) {
     console.trace("error", error);
     return res.status(500).json({ error: error });

@@ -1,6 +1,6 @@
 import { checkTokenValidity } from "./refreshToken.js";
 
-async function logOut(email) {
+async function logOut() {
   const response = await fetch("http://localhost:3000/session/signout", {
     method: "PUT",
     mode: "cors",
@@ -9,16 +9,14 @@ async function logOut(email) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
-    body: JSON.stringify({ email: email }),
   });
   return response;
 }
 
 export async function logOutUser(evt) {
   evt.preventDefault();
-  const email = localStorage.getItem("email");
   await checkTokenValidity();
-  const response = await logOut(email);
+  const response = await logOut();
   if (response.status === 200) {
     localStorage.clear();
     window.location.replace("/view/signin.html");

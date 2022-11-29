@@ -4,14 +4,13 @@ const divs = document.querySelectorAll("div");
 
 async function fetchProfile() {
   const response = await fetch("http://localhost:3000/user/profile", {
-    method: "POST",
+    method: "GET",
     mode: "cors",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
-    body: JSON.stringify({ email: localStorage.getItem("email") }),
   });
   return response;
 }

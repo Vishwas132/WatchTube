@@ -7,12 +7,12 @@ const upload = multer();
 
 const user = Router();
 
-user.post("/profile/", sessionAuthenticate, users.getUserProfile);
+user.get("/profile/", sessionAuthenticate, users.getUserProfile);
 
 user.post("/signup", upload.none(), users.signupUser);
 
 user.delete("/delete", sessionAuthenticate, users.deleteUser);
 
-user.post("/profile/report", sessionAuthenticate, users.generateUserReport);
+user.get("/profile/report", sessionAuthenticate, users.generateUserReport);
 
 export default user;

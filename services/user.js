@@ -54,15 +54,9 @@ const newUserProfile = async (userId, t, ...body) => {
 const createNewUser = async (req) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const { userId, accessToken, accessTokenExpiry, refreshToken } =
-        await newUser(req.body, t);
-      await newUserProfile(userId, t, req.body);
-      return {
-        userId: userId,
-        accessToken: accessToken,
-        accessTokenExpiry: accessTokenExpiry,
-        refreshToken: refreshToken,
-      };
+      const userObj = await newUser(req.body, t);
+      await newUserProfile(userObj.userId, t, req.body);
+      return userObj;
     });
     return result;
   } catch (error) {
@@ -101,7 +95,7 @@ const getProfileById = async (email) => {
 
 const getPdfReport = async (req) => {
   try {
-    const { pageUrl } = req.body;
+    const pageUrl = req.query.url;
     const browser = await puppeteer.launch({
       // headless: false,
       dumpio: true,

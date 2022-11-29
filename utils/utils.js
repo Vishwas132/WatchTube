@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import jsonObj from "../config/default.json" assert { type: "json" };
+import config from "../config/default.json" assert { type: "json" };
 import crypto from "crypto";
 import util from "util";
 
@@ -20,8 +20,8 @@ const verifyPassword = async (password, passwordHash) => {
 };
 
 const createAccessToken = (data) => {
-  const token = jwt.sign(data, jsonObj.app.accessTokenSecretKey, {
-    expiresIn: jsonObj.app.tokenExpireInSeconds,
+  const token = jwt.sign(data, config.app.accessTokenSecretKey, {
+    expiresIn: config.app.tokenExpiresInSeconds,
   });
   const payload = jwt.decode(token);
   return {
@@ -31,15 +31,15 @@ const createAccessToken = (data) => {
 };
 
 const createRefreshToken = (data) => {
-  return jwt.sign(data, jsonObj.app.refreshTokenSecretKey);
+  return jwt.sign(data, config.app.refreshTokenSecretKey);
 };
 
 const verifyAccessToken = (token) => {
-  return jwt.verify(token, jsonObj.app.accessTokenSecretKey);
+  return jwt.verify(token, config.app.accessTokenSecretKey);
 };
 
 const verifyRefreshToken = (token) => {
-  return jwt.verify(token, jsonObj.app.refreshTokenSecretKey);
+  return jwt.verify(token, config.app.refreshTokenSecretKey);
 };
 
 const getRefreshToken = (req) => {

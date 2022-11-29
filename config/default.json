@@ -2,7 +2,8 @@
   "app": {
     "accessTokenSecretKey": "access_token_JWT",
     "refreshTokenSecretKey": "refresh_token_JWT",
-    "tokenExpireInSeconds": 900
+    "tokenExpiresInSeconds": 900,
+    "sessionExpiresInMilliseconds": 86400000
   },
   "database": {
     "username": "postgres",
