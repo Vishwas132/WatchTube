@@ -1,4 +1,4 @@
-import { checkTokenValidity } from "./refreshToken.js";
+import checkTokenValidity from "./refreshToken.js";
 
 async function fetchPdf() {
   const response = await fetch(

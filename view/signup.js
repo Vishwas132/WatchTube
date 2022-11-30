@@ -11,7 +11,7 @@ async function sendData(formData, route) {
   return response;
 }
 
-async function signupUser(evt) {
+export async function signupUser(evt) {
   evt.preventDefault();
   const route =
     evt.target.id === "signin" ? "/session/signin" : "/session/signup";
@@ -28,7 +28,7 @@ async function signupUser(evt) {
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("accessTokenExpiry", data.accessTokenExpiry);
     localStorage.setItem("email", formData.get("email"));
-    window.location.assign("/view/profile.html");
+    window.location.assign("/view/homepage.html");
   } else {
     console.log("response.status", response.status);
   }

@@ -1,6 +1,4 @@
-import { checkTokenValidity } from "./refreshToken.js";
-
-const divs = document.querySelectorAll("div");
+import checkTokenValidity from "./refreshToken.js";
 
 async function fetchProfile() {
   const response = await fetch("http://localhost:3000/user/profile", {
@@ -20,6 +18,7 @@ async function fillValues() {
   const response = await fetchProfile();
   if (response.status === 200) {
     const userProfile = await response.json();
+    const divs = document.querySelectorAll("div");
     divs.forEach((div) => {
       div.append(userProfile[div.id]);
     });

@@ -12,3 +12,8 @@ div {
 button {
   margin: 1rem;
 }
+
+video {
+  aspect-ratio: 16/9;
+  border: 1px solid black;
+}

@@ -11,7 +11,7 @@ async function refreshAccessToken() {
   return response;
 }
 
-export async function checkTokenValidity() {
+export default async function checkTokenValidity() {
   if (Date.now() > localStorage.getItem("accessTokenExpiry") * 1000) {
     console.log("accessToken expired");
     const response = await refreshAccessToken();
