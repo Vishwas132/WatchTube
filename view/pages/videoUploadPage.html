@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signin</title>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <script type="module" src="../scripts/uploadVideo.js" defer></script>
+  </head>
+  <body>
+    <header><nav></nav></header>
+    <form method="post" id="video-upload" enctype="multipart/form-data">
+      <label for="videoTitle">Video Title:</label><br />
+      <input type="text" id="title" name="videoTitle" /><br />
+      <label for="description">Description:</label><br />
+      <input type="text" id="description" name="description" /><br />
+      <label for="video">Upload video:</label><br />
+      <input type="file" id="video" name="video"></input><br /><br />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>

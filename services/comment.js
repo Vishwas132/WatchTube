@@ -17,7 +17,7 @@ const newComment = async (body) => {
         "commentsCount",
         {
           where: {
-            userId: body.userId,
+            id: body.videoId,
           },
         },
         { transaction: t }
@@ -31,11 +31,11 @@ const newComment = async (body) => {
   }
 };
 
-const getComments = async (id) => {
+const getComments = async (videoId) => {
   try {
     const obj = await db.Comments.findAll({
       where: {
-        videoId: id,
+        videoId: videoId,
       },
       raw: true,
     });
@@ -71,7 +71,7 @@ const deleteComment = async (body) => {
         "commentsCount",
         {
           where: {
-            userId: body.userId,
+            id: body.videoId,
           },
         },
         { transaction: t }

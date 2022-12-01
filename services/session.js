@@ -9,7 +9,7 @@ import db from "../models/index.js";
 const signIn = async (body) => {
   try {
     const { email, password } = body;
-    const { passwordHash } = await getUser(email);
+    const { id, passwordHash } = await getUser(email);
     if (passwordHash === undefined) throw "User not registered";
     const isRegistered = await verifyPassword(password, passwordHash);
     if (!isRegistered) throw "Email or password wrong";
@@ -17,6 +17,7 @@ const signIn = async (body) => {
     const refreshToken = createRefreshToken({ email });
     await updateRefreshToken(email, refreshToken);
     return {
+      userId: id,
       accessToken: tokenObj.accessToken,
       accessTokenExpiry: tokenObj.accessTokenExpiry,
       refreshToken: refreshToken,

@@ -16,9 +16,9 @@ async function fetchVideo() {
 }
 
 async function fillValues() {
+  addNavButtons();
   const response = await fetchVideo();
   if (response.status === 206) {
-    addNavButtons();
     const video = document.querySelector("video");
     video.src = `http://localhost:3000/video/${localStorage.getItem(
       "videoId"

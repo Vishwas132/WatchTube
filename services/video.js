@@ -48,7 +48,7 @@ const deleteVideo = async (body) => {
       const obj = await db.Videos.destroy(
         {
           where: {
-            id: body.id,
+            id: body.videoId,
           },
         },
         { transaction: t }
@@ -77,7 +77,9 @@ const likeVideo = async (body) => {
       const obj = await db.Videos.increment(
         "likesCount",
         {
-          where: { id: body.id },
+          where: {
+            id: body.videoId,
+          },
           plain: true,
         },
         { transaction: t }
@@ -106,7 +108,9 @@ const dislikeVideo = async (body) => {
       const obj = await db.Videos.increment(
         "dislikesCount",
         {
-          where: { id: body.id },
+          where: {
+            id: body.videoId,
+          },
           plain: true,
         },
         { transaction: t }

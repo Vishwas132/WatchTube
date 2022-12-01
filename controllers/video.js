@@ -1,6 +1,6 @@
 import * as video from "../services/video.js";
 import fs from "fs/promises";
-import { basename, dirname } from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { createReadStream } from "fs";
 
@@ -37,7 +37,7 @@ const getVideoById = async (req, res) => {
     }
 
     const videoObj = await video.getVideo(id);
-    if (videoObj === undefined) throw Error("No video");
+    if (!videoObj) throw Error("No video");
 
     // get video stats
     const videoPath =
@@ -69,8 +69,6 @@ const getVideoById = async (req, res) => {
 
     // Stream the video chunk to the client
     videoStream.pipe(res);
-
-    // return res.status(200).json(videoObj);
   } catch (error) {
     console.trace("error", error);
     return res.status(404).json(error.message);
@@ -80,8 +78,9 @@ const getVideoById = async (req, res) => {
 const deleteVideoById = async (req, res) => {
   try {
     const videoObj = await video.deleteVideo(req.body);
+    console.log("videoObj", videoObj);
     if (!videoObj) throw Error("No video");
-    return res.status(200).json(`Video with id=${id} deleted`);
+    return res.status(200).json(`Video with id=${req.body.id} deleted`);
   } catch (error) {
     console.trace("error", error);
     return res.status(404).json(error.message);

@@ -19,7 +19,7 @@ async function logOutUser(evt) {
   const response = await logOut();
   if (response.status === 200) {
     localStorage.clear();
-    location.assign("http://127.0.0.1:5500/view/homepage.html");
+    location.assign("http://127.0.0.1:5500/view/pages/homepage.html");
   } else {
     console.trace("response", response);
   }

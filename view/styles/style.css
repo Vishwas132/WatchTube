@@ -7,6 +7,8 @@ body {
 
 div {
   margin: 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 button {
@@ -16,4 +18,10 @@ button {
 video {
   aspect-ratio: 16/9;
   border: 1px solid black;
+}
+
+.videoUrl {
+  height: 200px;
+  width: 300px;
+  background-color: antiquewhite;
 }

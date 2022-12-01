@@ -10,6 +10,7 @@ const sessionAuthenticate = async (req, res, next) => {
     if (userObj?.email === undefined || userObj?.signedIn === false) {
       return res.sendStatus(404);
     }
+    req.body.userId = userObj.id;
     req.body.email = payload.email;
     next();
   } catch (error) {

@@ -1,3 +1,4 @@
+import addNavButtons from "./navButtons.js";
 import checkTokenValidity from "./refreshToken.js";
 
 async function fetchProfile() {
@@ -17,6 +18,7 @@ async function fillValues() {
   await checkTokenValidity();
   const response = await fetchProfile();
   if (response.status === 200) {
+    addNavButtons();
     const userProfile = await response.json();
     const divs = document.querySelectorAll("div");
     divs.forEach((div) => {

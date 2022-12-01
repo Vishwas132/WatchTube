@@ -12,20 +12,21 @@ async function fetchVideos() {
 }
 
 async function fillValues() {
+  addNavButtons();
   const response = await fetchVideos();
   if (response.status === 200) {
-    addNavButtons();
     const div = document.querySelector("div");
 
     const videos = await response.json();
     videos.forEach((video) => {
-      const url = document.createElement("a");
-      url.href = "#";
+      const url = document.createElement("div");
+      // url.href = "#";
       url.textContent = video.videoTitle;
       url.id = video.id;
+      url.className = "videoUrl";
       div.append(url);
     });
-    const urls = document.querySelectorAll("a");
+    const urls = document.querySelectorAll(".videoUrl");
     if (urls) {
       urls.forEach((url) => {
         url.addEventListener("click", redirectPage);
@@ -38,7 +39,7 @@ async function fillValues() {
 
 async function redirectPage(evt) {
   localStorage.setItem("videoId", evt.srcElement.id);
-  location.assign("/view/video.html");
+  location.assign("/view/pages/video.html");
 }
 
 window.addEventListener("DOMContentLoaded", fillValues);
