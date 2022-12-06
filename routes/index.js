@@ -4,12 +4,13 @@ import session from "./session.js";
 import video from "./video.js";
 import comment from "./comment.js";
 import favorite from "./favorite.js";
+import subscription from "./subscription.js";
 
 const route = Router();
 
 route.get("/", (req, res) => {
   try {
-    return res.status(200).json("success");
+    return res.sendStatus(200);
   } catch (error) {
     throw error;
   }
@@ -24,5 +25,7 @@ route.use("/video", video);
 route.use("/comment", comment);
 
 route.use("/favorite", favorite);
+
+route.use("/subscription", subscription);
 
 export default route;

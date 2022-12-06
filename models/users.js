@@ -2,33 +2,33 @@ export default (sequelize, DataTypes) => {
   const Users = sequelize.define(
     "Users",
     {
-      id: {
+      userId: {
+        field: "user_id",
         type: DataTypes.BIGINT,
         autoIncrement: true,
         primaryKey: true,
-        field: "id",
       },
       email: {
+        field: "email",
         type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
-        field: "email",
       },
       passwordHash: {
+        field: "password_hash",
         type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
-        field: "password_hash",
       },
       refreshToken: {
+        field: "refresh_token",
         type: DataTypes.TEXT,
         unique: true,
-        field: "refresh_token",
       },
       signedIn: {
+        field: "signed_in",
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        field: "signed_in",
       },
     },
     {
@@ -39,33 +39,36 @@ export default (sequelize, DataTypes) => {
   );
 
   Users.associate = function (model) {
-    const { Users, UsersProfile, Videos, Comments, Favorites } = model;
+    const { UsersProfile, Comments, Favorites, Subscriptions, Channels } =
+      model;
 
     Users.hasOne(UsersProfile, {
       as: "UsersProfile",
       foreignKey: "userId",
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
-    });
-
-    Users.hasMany(Videos, {
-      as: "Videos",
-      foreignKey: "userId",
-      onUpdate: "CASCADE",
       onDelete: "CASCADE",
     });
 
     Users.hasMany(Comments, {
       as: "Comments",
       foreignKey: "userId",
-      onUpdate: "CASCADE",
       onDelete: "CASCADE",
     });
 
     Users.hasMany(Favorites, {
       as: "Favorites",
       foreignKey: "userId",
-      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    });
+
+    Users.hasMany(Subscriptions, {
+      as: "Subscriptions",
+      foreignKey: "subscriberId",
+      onDelete: "CASCADE",
+    });
+
+    Users.hasOne(Channels, {
+      as: "Channels",
+      foreignKey: "userId",
       onDelete: "CASCADE",
     });
   };

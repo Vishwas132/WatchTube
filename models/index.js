@@ -7,7 +7,7 @@ import jsonObj from "./../config/default.json" assert { type: "json" };
 const { database, username, password, ...dbConfig } = jsonObj.database;
 
 import { createNamespace } from "cls-hooked";
-const cls = createNamespace("demo_project");
+const cls = createNamespace("youtube_backend");
 Sequelize.useCLS(cls);
 
 const __filename = fileURLToPath(import.meta.url);

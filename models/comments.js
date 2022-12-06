@@ -2,8 +2,8 @@ export default (sequelize, DataTypes) => {
   const Comments = sequelize.define(
     "Comments",
     {
-      id: {
-        field: "id",
+      commentId: {
+        field: "comment_id",
         type: DataTypes.BIGINT,
         autoIncrement: true,
         primaryKey: true,
@@ -11,32 +11,20 @@ export default (sequelize, DataTypes) => {
       userId: {
         field: "user_id",
         type: DataTypes.BIGINT,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       videoId: {
         field: "video_id",
         type: DataTypes.BIGINT,
-        references: {
-          model: "Videos",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       comment: {
+        field: "comment",
         type: DataTypes.TEXT,
         allowNull: false,
-        field: "comment",
       },
       createdOn: {
+        field: "created_on",
         type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
-        field: "created_on",
       },
     },
     {

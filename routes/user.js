@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as users from "../controllers/user.js";
+import * as controller from "../controllers/user.js";
 import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 import multer from "multer";
 
@@ -7,12 +7,12 @@ const upload = multer();
 
 const user = Router();
 
-user.get("/profile/", sessionAuthenticate, users.getUserProfile);
+user.get("/profile/", sessionAuthenticate, controller.getUserProfile);
 
-user.post("/signup", upload.none(), users.signupUser);
+user.post("/signup", upload.none(), controller.signupUser);
 
-user.delete("/delete", sessionAuthenticate, users.deleteUser);
+user.delete("/delete", sessionAuthenticate, controller.deleteUser);
 
-user.get("/profile/report", sessionAuthenticate, users.generateUserReport);
+user.get("/profile/report", sessionAuthenticate, controller.generateUserReport);
 
 export default user;

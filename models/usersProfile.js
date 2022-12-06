@@ -5,49 +5,49 @@ export default (sequelize, DataTypes) => {
       userId: {
         field: "user_id",
         type: DataTypes.BIGINT,
+        allowNull: false,
         primaryKey: true,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       username: {
+        field: "username",
         type: DataTypes.TEXT,
         allowNull: false,
-        field: "username",
       },
       email: {
+        field: "email",
         type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
-        field: "email",
       },
       videosCount: {
+        field: "videos_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "videos_count",
       },
       commentsCount: {
+        field: "comments_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "comments_count",
       },
       likesCount: {
+        field: "likes_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "likes_count",
       },
       dislikesCount: {
+        field: "dislikes_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "dislikes_count",
       },
       favoritesCount: {
+        field: "favorites_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "favorites_count",
+      },
+      subscribersCount: {
+        field: "subscribers_count",
+        type: DataTypes.BIGINT,
+        default: 0,
       },
     },
     {
@@ -58,7 +58,7 @@ export default (sequelize, DataTypes) => {
   );
 
   UsersProfile.associate = function (model) {
-    const { Users, UsersProfile } = model;
+    const { Users } = model;
 
     UsersProfile.belongsTo(Users, {
       as: "Users",

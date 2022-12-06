@@ -2,51 +2,46 @@ export default (sequelize, DataTypes) => {
   const Videos = sequelize.define(
     "Videos",
     {
-      id: {
-        field: "id",
+      videoId: {
+        field: "video_id",
         type: DataTypes.BIGINT,
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
-        field: "user_id",
+      channelId: {
+        field: "channel_id",
         type: DataTypes.BIGINT,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
+        allowNull: false,
       },
       videoTitle: {
+        field: "video_title",
         type: DataTypes.TEXT,
         allowNull: false,
-        field: "video_title",
       },
       videoUrl: {
+        field: "video_url",
         type: DataTypes.TEXT,
         allowNull: false,
-        field: "video_url",
       },
       likesCount: {
+        field: "likes_count",
         type: DataTypes.BIGINT,
         default: 0,
-        field: "likes_count",
       },
       dislikesCount: {
+        field: "dislikes_count",
         type: DataTypes.BIGINT,
         defaultValue: 0,
-        field: "dislikes_count",
       },
       commentsCount: {
+        field: "comments_count",
         type: DataTypes.BIGINT,
         defaultValue: 0,
-        field: "comments_count",
       },
       createdOn: {
+        field: "created_on",
         type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
-        field: "created_on",
       },
     },
     {
@@ -57,20 +52,21 @@ export default (sequelize, DataTypes) => {
   );
 
   Videos.associate = function (model) {
-    const { Users, Videos, Comments, Favorites } = model;
+    const { Channels, Comments, Favorites } = model;
 
-    Videos.belongsTo(Users, {
-      as: "Users",
-      foreignKey: "userId",
-      onUpdate: "CASCADE",
+    Videos.belongsTo(Channels, {
+      as: "Channels",
+      foreignKey: "channelId",
       onDelete: "CASCADE",
     });
+
     Videos.hasMany(Comments, {
       as: "Comments",
       foreignKey: "videoId",
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
     });
+
     Videos.hasMany(Favorites, {
       as: "Favorites",
       foreignKey: "videoId",

@@ -3,16 +3,12 @@ import db from "../models/index.js";
 const addFavoriteById = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Favorites.create(body, { transaction: t });
-      await db.UsersProfile.increment(
-        "favoritesCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+      const obj = await db.Favorites.create(body);
+      await db.UsersProfile.increment("favoritesCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
+      });
       return obj?.dataValues;
     });
     return result;
@@ -40,24 +36,17 @@ const getFavorites = async (userId) => {
 const removeFavoriteById = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Favorites.destroy(
-        {
-          where: {
-            userId: body.userId,
-            videoId: body.videoId,
-          },
+      const obj = await db.Favorites.destroy({
+        where: {
+          userId: body.userId,
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
-      await db.UsersProfile.decrement(
-        "favoritesCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+      });
+      await db.UsersProfile.decrement("favoritesCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
+      });
       return obj;
     });
     return result;

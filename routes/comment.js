@@ -4,13 +4,13 @@ import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const comment = Router();
 
-comment.get("/:id", comments.getCommentsByVideo);
+comment.get("/:videoId", comments.getCommentsByVideo);
 
 comment.post("/", sessionAuthenticate, comments.postComment);
 
 comment.delete("/delete", sessionAuthenticate, comments.deleteCommentById);
 
-comment.put("/:id", sessionAuthenticate, comments.editCommentById);
+comment.put("/", sessionAuthenticate, comments.editCommentById);
 
 // comment.put("/like", comments.likeComment);
 

@@ -9,7 +9,7 @@ import db from "../models/index.js";
 const signIn = async (body) => {
   try {
     const { email, password } = body;
-    const { id, passwordHash } = await getUser(email);
+    const { userId, passwordHash } = await getUser(email);
     if (passwordHash === undefined) throw "User not registered";
     const isRegistered = await verifyPassword(password, passwordHash);
     if (!isRegistered) throw "Email or password wrong";
@@ -17,7 +17,7 @@ const signIn = async (body) => {
     const refreshToken = createRefreshToken({ email });
     await updateRefreshToken(email, refreshToken);
     return {
-      userId: id,
+      userId: userId,
       accessToken: tokenObj.accessToken,
       accessTokenExpiry: tokenObj.accessTokenExpiry,
       refreshToken: refreshToken,
@@ -70,7 +70,7 @@ const generateToken = async (refreshToken) => {
     });
     const payload = verifyRefreshToken(refreshToken);
     if (payload?.email === undefined || userObj?.[0]?.email === undefined)
-      throw Error("Invalid token");
+      return;
 
     const token = createAccessToken({ email: payload.email });
     return {
@@ -85,7 +85,7 @@ const generateToken = async (refreshToken) => {
 
 const signOut = async (email) => {
   try {
-    return await db.Users.update(
+    const obj = await db.Users.update(
       {
         refreshToken: null,
         signedIn: false,
@@ -94,6 +94,7 @@ const signOut = async (email) => {
         where: { email: email },
       }
     );
+    return obj;
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";

@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import config from "../config/default.json" assert { type: "json" };
 import crypto from "crypto";
 import util from "util";
+import fs from "fs/promises";
 
 const scrypt = util.promisify(crypto.scrypt);
 
@@ -42,8 +43,8 @@ const verifyRefreshToken = (token) => {
   return jwt.verify(token, config.app.refreshTokenSecretKey);
 };
 
-const getRefreshToken = (req) => {
-  return req.cookies.sessionToken;
+const getRefreshToken = (cookies) => {
+  return cookies.sessionToken;
 };
 
 const getAccessToken = (req) => {
@@ -60,6 +61,14 @@ const getAccessToken = (req) => {
   }
 };
 
+const removeVideoFiles = async (videoUrl) => {
+  try {
+    await fs.rm(`./../youtube/files/uploads/${videoUrl}`);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   createAccessToken,
   createRefreshToken,
@@ -69,4 +78,5 @@ export {
   getRefreshToken,
   getPasswordHash,
   verifyPassword,
+  removeVideoFiles,
 };

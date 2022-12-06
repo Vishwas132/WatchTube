@@ -1,18 +1,15 @@
 import db from "../models/index.js";
+import { removeVideoFiles } from "../utils/utils.js";
 
 const newVideo = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Videos.create(body, { transaction: t });
-      await db.UsersProfile.increment(
-        "videosCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+      const obj = await db.Videos.create(body);
+      await db.UsersProfile.increment("videosCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
+      });
       return obj?.dataValues;
     });
     return result;
@@ -32,9 +29,9 @@ const getAllVideos = async () => {
   }
 };
 
-const getVideo = async (id) => {
+const getVideo = async (videoId) => {
   try {
-    const obj = await db.Videos.findByPk(id);
+    const obj = await db.Videos.findByPk(videoId);
     return obj?.dataValues;
   } catch (error) {
     console.trace("error", error);
@@ -44,26 +41,24 @@ const getVideo = async (id) => {
 
 const deleteVideo = async (body) => {
   try {
+    const videoUrl = (await getVideo(body.videoId))?.videoUrl;
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Videos.destroy(
-        {
-          where: {
-            id: body.videoId,
-          },
+      const obj = await db.Videos.destroy({
+        where: {
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
-      await db.UsersProfile.decrement(
-        "videosCount",
-        {
+      });
+      if (obj) {
+        await removeVideoFiles(videoUrl);
+        await db.UsersProfile.decrement("videosCount", {
           where: {
             userId: body.userId,
           },
-        },
-        { transaction: t }
-      );
+        });
+      }
       return obj;
     });
+
     return result;
   } catch (error) {
     console.trace("error", error);
@@ -74,25 +69,17 @@ const deleteVideo = async (body) => {
 const likeVideo = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Videos.increment(
-        "likesCount",
-        {
-          where: {
-            id: body.videoId,
-          },
-          plain: true,
+      const obj = await db.Videos.increment("likesCount", {
+        where: {
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
-      await db.UsersProfile.increment(
-        "likesCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+        plain: true,
+      });
+      await db.UsersProfile.increment("likesCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
+      });
       return obj[0][0];
     });
     return result;
@@ -105,25 +92,17 @@ const likeVideo = async (body) => {
 const dislikeVideo = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Videos.increment(
-        "dislikesCount",
-        {
-          where: {
-            id: body.videoId,
-          },
-          plain: true,
+      const obj = await db.Videos.increment("dislikesCount", {
+        where: {
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
-      await db.UsersProfile.increment(
-        "dislikesCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+        plain: true,
+      });
+      await db.UsersProfile.increment("dislikesCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
+      });
       return obj[0][0];
     });
     return result;

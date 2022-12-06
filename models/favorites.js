@@ -6,23 +6,11 @@ export default (sequelize, DataTypes) => {
         field: "user_id",
         type: DataTypes.BIGINT,
         primaryKey: true,
-        references: {
-          model: "Users",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       videoId: {
         field: "video_id",
         type: DataTypes.BIGINT,
         primaryKey: true,
-        references: {
-          model: "Videos",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
     },
     {

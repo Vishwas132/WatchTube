@@ -7,12 +7,12 @@ const video = Router();
 
 video.get("/all", videos.getVideos);
 
-video.get("/:id", videos.getVideoById);
+video.get("/:videoId", videos.getVideoById);
 
 video.post(
   "/upload",
-  sessionAuthenticate,
   upload.single("video"),
+  sessionAuthenticate,
   videos.uploadVideo
 );
 

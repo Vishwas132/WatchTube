@@ -3,25 +3,17 @@ import db from "../models/index.js";
 const newComment = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Comments.create(body, { transaction: t });
-      await db.UsersProfile.increment(
-        "commentsCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+      const obj = await db.Comments.create(body);
+      await db.UsersProfile.increment("commentsCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
-      await db.Videos.increment(
-        "commentsCount",
-        {
-          where: {
-            id: body.videoId,
-          },
+      });
+      await db.Videos.increment("commentsCount", {
+        where: {
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
+      });
       return obj?.dataValues;
     });
     return result;
@@ -49,33 +41,22 @@ const getComments = async (videoId) => {
 const deleteComment = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
-      const obj = await db.Comments.destroy(
-        {
-          where: {
-            id: body.id,
-          },
-          returning: true,
+      const obj = await db.Comments.destroy({
+        where: {
+          commentId: body.commentId,
         },
-        { transaction: t }
-      );
-      await db.UsersProfile.decrement(
-        "commentsCount",
-        {
-          where: {
-            userId: body.userId,
-          },
+        returning: true,
+      });
+      await db.UsersProfile.decrement("commentsCount", {
+        where: {
+          userId: body.userId,
         },
-        { transaction: t }
-      );
-      await db.Videos.decrement(
-        "commentsCount",
-        {
-          where: {
-            id: body.videoId,
-          },
+      });
+      await db.Videos.decrement("commentsCount", {
+        where: {
+          videoId: body.videoId,
         },
-        { transaction: t }
-      );
+      });
       return obj;
     });
     return result;
@@ -85,11 +66,11 @@ const deleteComment = async (body) => {
   }
 };
 
-const editComment = async (id, body) => {
+const editComment = async ({ commentId, ...body }) => {
   try {
     const obj = await db.Comments.update(body, {
       where: {
-        id: id,
+        commentId: commentId,
       },
       returning: true,
     });
