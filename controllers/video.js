@@ -1,16 +1,30 @@
 import * as video from "../services/video.js";
+import sendMail from "../services/mail.js";
+import { getSubscribers } from "../services/subscription.js";
 import fs from "fs/promises";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import path from "path";
 import { createReadStream } from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { channelInfoByUserId, getProfileById } from "../services/user.js";
 
 const uploadVideo = async (req, res) => {
   try {
     req.body.videoUrl = req.file.filename;
+    const obj = await channelInfoByUserId(req.body.userId);
+    if (obj.channelId !== req.body.channelId) return res.sendStatus(404);
+
     const videoObj = await video.newVideo(req.body);
+    const subscribers = await getSubscribers(req.body.channelId);
+    if (subscribers?.[0]?.dataValues?.subscriberId) {
+      let emails = [];
+      subscribers?.forEach(async (subscriber) => {
+        const { email } = await getProfileById(
+          subscriber?.dataValues?.subscriberId
+        );
+        emails.push(email);
+      });
+      const messageIds = await sendMail(emails);
+      if (!messageIds) return req.sendStatus(404);
+    }
     return res.status(200).json(videoObj);
   } catch (error) {
     console.trace("error", error);
@@ -30,20 +44,19 @@ const getVideos = async (req, res) => {
 
 const getVideoById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { videoId } = req.params;
     const range = req.headers.range;
     if (!range) {
       res.status(400).send("Requires Range header");
     }
 
-    const videoObj = await video.getVideo(id);
-    if (!videoObj) throw Error("No video");
+    const videoObj = await video.getVideo(videoId);
+    if (!videoObj) return res.sendStatus(404);
 
     // get video stats
-    const videoPath =
-      __dirname.slice(0, __dirname.length - 11) +
-      "\\files\\uploads\\" +
-      videoObj.videoUrl;
+    const videoPath = path.resolve(
+      process.cwd() + `/files/uploads/${videoObj.videoUrl}`
+    );
     const videoSize = (await fs.stat(videoPath)).size;
 
     // Parse Range
@@ -78,9 +91,8 @@ const getVideoById = async (req, res) => {
 const deleteVideoById = async (req, res) => {
   try {
     const videoObj = await video.deleteVideo(req.body);
-    console.log("videoObj", videoObj);
-    if (!videoObj) throw Error("No video");
-    return res.status(200).json(`Video with id=${req.body.id} deleted`);
+    if (!videoObj) return res.sendStatus(404);
+    return res.status(200).json(`Video with id=${req.body.videoId} deleted`);
   } catch (error) {
     console.trace("error", error);
     return res.status(404).json(error.message);
@@ -90,7 +102,7 @@ const deleteVideoById = async (req, res) => {
 const likeVideoById = async (req, res) => {
   try {
     const likedObj = await video.likeVideo(req.body);
-    if (!likedObj?.id) throw Error("No video");
+    if (!likedObj?.videoId) return res.sendStatus(404);
     return res.status(200).json(`Video liked`);
   } catch (error) {
     console.trace("error", error);
@@ -100,8 +112,8 @@ const likeVideoById = async (req, res) => {
 
 const dislikeVideoById = async (req, res) => {
   try {
-    const likedObj = await video.dislikeVideo(req.body);
-    if (!likedObj?.id) throw Error("No video");
+    const dislikedObj = await video.dislikeVideo(req.body);
+    if (!dislikedObj?.videoId) return res.sendStatus(404);
     return res.status(200).json(`Video disliked`);
   } catch (error) {
     console.trace("error", error);
