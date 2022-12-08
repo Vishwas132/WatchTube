@@ -1,8 +1,8 @@
-import { subscribe, unsubscribe } from "../services/subscription.js";
+import * as subscription from "../services/subscription.js";
 
-const subscribeChannel = async (req, res) => {
+const subscribe = async (req, res) => {
   try {
-    const response = await subscribe(req.body);
+    const response = await subscription.subscribe(req.body);
     if (!response) return res.sendStatus(404);
     return res.status(200).json("Channel subscibed");
   } catch (error) {
@@ -11,9 +11,9 @@ const subscribeChannel = async (req, res) => {
   }
 };
 
-const unsubscribeChannel = async (req, res) => {
+const unsubscribe = async (req, res) => {
   try {
-    const response = await unsubscribe(req.body);
+    const response = await subscription.unsubscribe(req.body);
     if (!response) return res.sendStatus(404);
     return res.status(200).json("Channel subscibed");
   } catch (error) {
@@ -22,4 +22,4 @@ const unsubscribeChannel = async (req, res) => {
   }
 };
 
-export { subscribeChannel, unsubscribeChannel };
+export { subscribe, unsubscribe };

@@ -6,7 +6,7 @@ const favorite = Router();
 
 favorite.post("/", sessionAuthenticate, favorites.addFavorite);
 
-favorite.get("/all", sessionAuthenticate, favorites.getAllFavorite);
+favorite.get("/all", sessionAuthenticate, favorites.getAllFavorites);
 
 favorite.delete("/", sessionAuthenticate, favorites.removeFavorite);
 

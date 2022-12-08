@@ -4,7 +4,7 @@ import { getSubscribers } from "../services/subscription.js";
 import fs from "fs/promises";
 import path from "path";
 import { createReadStream } from "fs";
-import { getChannelInfo, getProfileById } from "../services/user.js";
+import { getChannelInfo, getUserProfile } from "../services/user.js";
 
 const uploadVideo = async (req, res) => {
   try {
@@ -17,10 +17,10 @@ const uploadVideo = async (req, res) => {
     if (subscribers?.[0]?.dataValues?.subscriberId) {
       let emails = [];
       subscribers?.forEach(async (subscriber) => {
-        const { email } = await getProfileById(
+        const profile = await getUserProfile(
           subscriber?.dataValues?.subscriberId
         );
-        emails.push(email);
+        emails.push(profile.email);
       });
       const messageIds = await sendMail(emails);
       if (!messageIds) return req.sendStatus(404);
@@ -32,7 +32,7 @@ const uploadVideo = async (req, res) => {
   }
 };
 
-const getVideos = async (req, res) => {
+const getAllVideos = async (req, res) => {
   try {
     const videosObj = await video.getAllVideos();
     return res.status(200).json(videosObj);
@@ -50,7 +50,7 @@ const getVideoById = async (req, res) => {
       res.status(400).send("Requires Range header");
     }
 
-    const videoObj = await video.getVideo(videoId);
+    const videoObj = await video.getVideoById(videoId);
     if (!videoObj) return res.sendStatus(404);
 
     // get video stats
@@ -88,7 +88,7 @@ const getVideoById = async (req, res) => {
   }
 };
 
-const deleteVideoById = async (req, res) => {
+const deleteVideo = async (req, res) => {
   try {
     const videoObj = await video.deleteVideo(req.body);
     if (!videoObj) return res.sendStatus(404);
@@ -99,7 +99,7 @@ const deleteVideoById = async (req, res) => {
   }
 };
 
-const likeVideoById = async (req, res) => {
+const likeVideo = async (req, res) => {
   try {
     const likedObj = await video.likeVideo(req.body);
     if (!likedObj?.videoId) return res.sendStatus(404);
@@ -110,7 +110,7 @@ const likeVideoById = async (req, res) => {
   }
 };
 
-const dislikeVideoById = async (req, res) => {
+const dislikeVideo = async (req, res) => {
   try {
     const dislikedObj = await video.dislikeVideo(req.body);
     if (!dislikedObj?.videoId) return res.sendStatus(404);
@@ -123,9 +123,9 @@ const dislikeVideoById = async (req, res) => {
 
 export {
   uploadVideo,
-  getVideos,
+  getAllVideos,
   getVideoById,
-  deleteVideoById,
-  likeVideoById,
-  dislikeVideoById,
+  deleteVideo,
+  likeVideo,
+  dislikeVideo,
 };

@@ -3,7 +3,7 @@ import config from "../config/default.json" assert { type: "json" };
 
 const signupUser = async (req, res) => {
   try {
-    const { refreshToken, ...userObj } = await user.createNewUser(req.body);
+    const { refreshToken, ...userObj } = await user.signupUser(req.body);
     res.cookie("sessionToken", refreshToken, {
       maxAge: config.app.sessionExpiresInMilliseconds,
       sameSite: "none",
@@ -19,8 +19,7 @@ const signupUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
   try {
-    const { email } = req.body;
-    const userObj = await user.getProfileById(email);
+    const userObj = await user.getUserProfile(req.params.userId);
     if (!userObj) return res.sendStatus(404);
     return res.status(200).json(userObj);
   } catch (error) {
@@ -32,7 +31,7 @@ const getUserProfile = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.body;
-    const userObj = await user.deleteUserById(userId);
+    const userObj = await user.deleteUser(userId);
     if (!userObj) return res.sendStatus(404);
     return res.status(200).json(`User ${userId} deleted`);
   } catch (error) {
@@ -41,9 +40,9 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const generateUserReport = async (req, res) => {
+const getPdfReport = async (req, res) => {
   try {
-    const pdf = await user.getPdfReport(req.body);
+    const pdf = await user.getPdfReport(req.params);
     if (!pdf) return res.sendStatus(404);
     // res.set({
     //   "Content-Type": "application/pdf",
@@ -56,13 +55,13 @@ const generateUserReport = async (req, res) => {
   }
 };
 
-const channelInfo = async (req, res) => {
+const getChannelInfo = async (req, res) => {
   try {
-    const { channelId } = req.params;
+    const { userId, channelId } = req.body;
     let channelObj = await user.getChannelInfo(channelId);
     if (channelObj === undefined) return res.sendStatus(404);
-    if (channelObj.userId !== String(req.body.userId)) {
-      let { userId, ...newChannelObj } = channelObj;
+    if (channelObj.userId !== String(userId)) {
+      let { channelOwnerId, ...newChannelObj } = channelObj;
       channelObj = newChannelObj;
     }
     return res.status(200).json(channelObj);
@@ -72,10 +71,4 @@ const channelInfo = async (req, res) => {
   }
 };
 
-export {
-  getUserProfile,
-  signupUser,
-  deleteUser,
-  generateUserReport,
-  channelInfo,
-};
+export { getUserProfile, signupUser, deleteUser, getPdfReport, getChannelInfo };

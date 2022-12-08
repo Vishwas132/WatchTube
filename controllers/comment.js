@@ -11,10 +11,10 @@ const postComment = async (req, res) => {
   }
 };
 
-const getCommentsByVideo = async (req, res) => {
+const getAllComments = async (req, res) => {
   try {
     const { videoId } = req.params;
-    const commentObj = await comment.getComments(videoId);
+    const commentObj = await comment.getAllComments(videoId);
     return res.status(200).json(commentObj);
   } catch (error) {
     console.trace("error", error);
@@ -22,7 +22,7 @@ const getCommentsByVideo = async (req, res) => {
   }
 };
 
-const deleteCommentById = async (req, res) => {
+const deleteComment = async (req, res) => {
   try {
     const commentObj = await comment.deleteComment(req.body);
     if (!commentObj) return res.sendStatus(404);
@@ -35,7 +35,7 @@ const deleteCommentById = async (req, res) => {
   }
 };
 
-const editCommentById = async (req, res) => {
+const editComment = async (req, res) => {
   try {
     const commentObj = await comment.editComment(req.body);
     if (!commentObj[0]) return res.sendStatus(404);
@@ -46,4 +46,4 @@ const editCommentById = async (req, res) => {
   }
 };
 
-export { postComment, getCommentsByVideo, deleteCommentById, editCommentById };
+export { postComment, getAllComments, deleteComment, editComment };

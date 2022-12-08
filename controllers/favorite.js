@@ -2,7 +2,7 @@ import * as favorite from "../services/favorite.js";
 
 const addFavorite = async (req, res) => {
   try {
-    const { userId, videoId } = await favorite.addFavoriteById(req.body);
+    const { userId, videoId } = await favorite.addFavorite(req.body);
     if (!userId) return res.sendStatus(404);
     return res.status(200).json(`Video ${videoId} saved by user ${userId}`);
   } catch (error) {
@@ -11,10 +11,10 @@ const addFavorite = async (req, res) => {
   }
 };
 
-const getAllFavorite = async (req, res) => {
+const getAllFavorites = async (req, res) => {
   try {
     const { userId } = req.body;
-    const favoritesObj = await favorite.getFavorites(userId);
+    const favoritesObj = await favorite.getAllFavorites(userId);
     return res.status(200).json(favoritesObj);
   } catch (error) {
     console.trace("error", error);
@@ -24,7 +24,7 @@ const getAllFavorite = async (req, res) => {
 
 const removeFavorite = async (req, res) => {
   try {
-    const userObj = await favorite.removeFavoriteById(req.body);
+    const userObj = await favorite.removeFavorite(req.body);
     if (!userObj) return res.sendStatus(404);
     return res
       .status(200)
@@ -37,4 +37,4 @@ const removeFavorite = async (req, res) => {
   }
 };
 
-export { addFavorite, getAllFavorite, removeFavorite };
+export { addFavorite, getAllFavorites, removeFavorite };

@@ -7,14 +7,18 @@ const upload = multer();
 
 const user = Router();
 
-user.get("/profile/", sessionAuthenticate, controller.getUserProfile);
+user.get("/profile/:userId", sessionAuthenticate, controller.getUserProfile);
 
 user.post("/signup", upload.none(), controller.signupUser);
 
 user.delete("/delete", sessionAuthenticate, controller.deleteUser);
 
-user.get("/profile/report", sessionAuthenticate, controller.generateUserReport);
+user.get(
+  "/profile/report/:userId",
+  sessionAuthenticate,
+  controller.getPdfReport
+);
 
-user.post("/channel/:channelId", sessionAuthenticate, controller.channelInfo);
+user.post("/channel", sessionAuthenticate, controller.getChannelInfo);
 
 export default user;

@@ -53,7 +53,7 @@ const newChannel = async (body) => {
   }
 };
 
-const createNewUser = async (body) => {
+const signupUser = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const userObj = await newUser(body);
@@ -70,7 +70,7 @@ const createNewUser = async (body) => {
   }
 };
 
-const deleteUserById = async (userId) => {
+const deleteUser = async (userId) => {
   try {
     const videoObjs = await getAllVideos();
     const obj = await db.Users.destroy({
@@ -105,14 +105,10 @@ const getUserCredentials = async (email) => {
   }
 };
 
-const getProfileById = async (userId) => {
+const getUserProfile = async (userId) => {
   try {
-    const obj = await db.UsersProfile.findAll({
-      where: {
-        userId: userId,
-      },
-    });
-    return obj?.[0]?.dataValues;
+    const obj = await db.UsersProfile.findByPk(userId);
+    return obj?.dataValues;
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";
@@ -129,9 +125,9 @@ const getChannelInfo = async (channelId) => {
   }
 };
 
-const getPdfReport = async (body) => {
+const getPdfReport = async ({ userId }) => {
   try {
-    let data = await getProfileById("v@abc.com");
+    let data = await getUserProfile(userId);
     const content = (
       await fsp.readFile(process.cwd() + "/view/pages/profile.html", "utf8")
     ).toString();
@@ -162,9 +158,9 @@ const getPdfReport = async (body) => {
 
 export {
   getUserCredentials,
-  createNewUser,
-  deleteUserById,
-  getProfileById,
+  signupUser,
+  deleteUser,
+  getUserProfile,
   getPdfReport,
   getChannelInfo,
 };

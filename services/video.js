@@ -29,7 +29,7 @@ const getAllVideos = async () => {
   }
 };
 
-const getVideo = async (videoId) => {
+const getVideoById = async (videoId) => {
   try {
     const obj = await db.Videos.findByPk(videoId);
     return obj?.dataValues;
@@ -115,7 +115,7 @@ const dislikeVideo = async (body) => {
 export {
   newVideo,
   getAllVideos,
-  getVideo,
+  getVideoById,
   deleteVideo,
   likeVideo,
   dislikeVideo,

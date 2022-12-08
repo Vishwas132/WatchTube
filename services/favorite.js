@@ -1,6 +1,6 @@
 import db from "../models/index.js";
 
-const addFavoriteById = async (body) => {
+const addFavorite = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Favorites.create(body);
@@ -18,7 +18,7 @@ const addFavoriteById = async (body) => {
   }
 };
 
-const getFavorites = async (userId) => {
+const getAllFavorites = async (userId) => {
   try {
     const obj = await db.Favorites.findAll({
       where: {
@@ -33,7 +33,7 @@ const getFavorites = async (userId) => {
   }
 };
 
-const removeFavoriteById = async (body) => {
+const removeFavorite = async (body) => {
   try {
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Favorites.destroy({
@@ -56,4 +56,4 @@ const removeFavoriteById = async (body) => {
   }
 };
 
-export { addFavoriteById, getFavorites, removeFavoriteById };
+export { addFavorite, getAllFavorites, removeFavorite };

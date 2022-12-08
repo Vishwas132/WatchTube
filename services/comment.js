@@ -23,7 +23,7 @@ const newComment = async (body) => {
   }
 };
 
-const getComments = async (videoId) => {
+const getAllComments = async (videoId) => {
   try {
     const obj = await db.Comments.findAll({
       where: {
@@ -81,4 +81,4 @@ const editComment = async ({ commentId, ...body }) => {
   }
 };
 
-export { newComment, getComments, deleteComment, editComment };
+export { newComment, getAllComments, deleteComment, editComment };

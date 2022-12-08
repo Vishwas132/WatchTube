@@ -9,7 +9,7 @@ const session = Router();
 
 session.post("/signin", upload.none(), sessions.signInUser);
 
-session.post("/token", sessions.generateAccessToken);
+session.get("/token", sessions.generateAccessToken);
 
 session.put("/signout", sessionAuthenticate, sessions.signOutUser);
 

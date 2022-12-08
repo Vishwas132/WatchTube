@@ -1,25 +1,25 @@
 import { Router } from "express";
-import * as videos from "../controllers/video.js";
+import * as controller from "../controllers/video.js";
 import upload from "../middlewares/videoUpload.js";
 import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const video = Router();
 
-video.get("/all", videos.getVideos);
+video.get("/all", controller.getAllVideos);
 
-video.get("/:videoId", videos.getVideoById);
+video.get("/:videoId", controller.getVideoById);
 
 video.post(
   "/upload",
   upload.single("video"),
   sessionAuthenticate,
-  videos.uploadVideo
+  controller.uploadVideo
 );
 
-video.delete("/delete", sessionAuthenticate, videos.deleteVideoById);
+video.delete("/delete", sessionAuthenticate, controller.deleteVideo);
 
-video.put("/like", sessionAuthenticate, videos.likeVideoById);
+video.put("/like", sessionAuthenticate, controller.likeVideo);
 
-video.put("/dislike", sessionAuthenticate, videos.dislikeVideoById);
+video.put("/dislike", sessionAuthenticate, controller.dislikeVideo);
 
 export default video;

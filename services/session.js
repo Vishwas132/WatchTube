@@ -7,7 +7,7 @@ import {
 import db from "../models/index.js";
 import { getUserCredentials } from "./user.js";
 
-const signIn = async (body) => {
+const signInUser = async (body) => {
   try {
     const { email, password } = body;
     const { userId, passwordHash } = await getUserCredentials(email);
@@ -16,7 +16,7 @@ const signIn = async (body) => {
     if (!isRegistered) throw "Email or password wrong";
     const tokenObj = createAccessToken({ email });
     const refreshToken = createRefreshToken({ email });
-    await updateRefreshToken(email, refreshToken);
+    await updateRefreshToken(userId, refreshToken);
     return {
       userId: userId,
       accessToken: tokenObj.accessToken,
@@ -29,7 +29,7 @@ const signIn = async (body) => {
   }
 };
 
-const updateRefreshToken = async (email, refreshToken) => {
+const updateRefreshToken = async (userId, refreshToken) => {
   try {
     await db.Users.update(
       {
@@ -37,7 +37,7 @@ const updateRefreshToken = async (email, refreshToken) => {
         signedIn: true,
       },
       {
-        where: { email: email },
+        where: { userId: userId },
       }
     );
   } catch (error) {
@@ -46,7 +46,7 @@ const updateRefreshToken = async (email, refreshToken) => {
   }
 };
 
-const generateToken = async (refreshToken) => {
+const generateAccessToken = async (refreshToken) => {
   try {
     const userObj = await db.Users.findAll({
       where: {
@@ -55,8 +55,7 @@ const generateToken = async (refreshToken) => {
       raw: true,
     });
     const payload = verifyRefreshToken(refreshToken);
-    if (payload?.email === undefined || userObj?.[0]?.email === undefined)
-      return;
+    if (!payload?.email || !userObj?.[0]?.email) return;
 
     const token = createAccessToken({ email: payload.email });
     return {
@@ -69,7 +68,7 @@ const generateToken = async (refreshToken) => {
   }
 };
 
-const signOut = async (email) => {
+const signOutUser = async (userId) => {
   try {
     const obj = await db.Users.update(
       {
@@ -77,7 +76,7 @@ const signOut = async (email) => {
         signedIn: false,
       },
       {
-        where: { email: email },
+        where: { userId: userId },
       }
     );
     return obj;
@@ -87,4 +86,4 @@ const signOut = async (email) => {
   }
 };
 
-export { signIn, generateToken, signOut };
+export { signInUser, generateAccessToken, signOutUser };
