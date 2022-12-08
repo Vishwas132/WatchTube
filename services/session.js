@@ -5,11 +5,12 @@ import {
   verifyRefreshToken,
 } from "../utils/utils.js";
 import db from "../models/index.js";
+import { getUserCredentials } from "./user.js";
 
 const signIn = async (body) => {
   try {
     const { email, password } = body;
-    const { userId, passwordHash } = await getUser(email);
+    const { userId, passwordHash } = await getUserCredentials(email);
     if (passwordHash === undefined) throw "User not registered";
     const isRegistered = await verifyPassword(password, passwordHash);
     if (!isRegistered) throw "Email or password wrong";
@@ -25,21 +26,6 @@ const signIn = async (body) => {
   } catch (error) {
     console.trace("error", error);
     throw error;
-  }
-};
-
-const getUser = async (email) => {
-  try {
-    const obj = await db.Users.findAll({
-      where: {
-        email: email,
-      },
-      raw: true,
-    });
-    return obj[0];
-  } catch (error) {
-    console.trace("error", error);
-    throw "Db error while executing query";
   }
 };
 
@@ -101,4 +87,4 @@ const signOut = async (email) => {
   }
 };
 
-export { signIn, generateToken, signOut, getUser };
+export { signIn, generateToken, signOut };

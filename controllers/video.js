@@ -4,12 +4,12 @@ import { getSubscribers } from "../services/subscription.js";
 import fs from "fs/promises";
 import path from "path";
 import { createReadStream } from "fs";
-import { channelInfoByUserId, getProfileById } from "../services/user.js";
+import { getChannelInfo, getProfileById } from "../services/user.js";
 
 const uploadVideo = async (req, res) => {
   try {
     req.body.videoUrl = req.file.filename;
-    const obj = await channelInfoByUserId(req.body.userId);
+    const obj = await getChannelInfo(req.body.channelId);
     if (obj.channelId !== req.body.channelId) return res.sendStatus(404);
 
     const videoObj = await video.newVideo(req.body);

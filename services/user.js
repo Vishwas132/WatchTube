@@ -90,6 +90,21 @@ const deleteUserById = async (userId) => {
   }
 };
 
+const getUserCredentials = async (email) => {
+  try {
+    const obj = await db.Users.findAll({
+      where: {
+        email: email,
+      },
+      raw: true,
+    });
+    return obj[0];
+  } catch (error) {
+    console.trace("error", error);
+    throw "Db error while executing query";
+  }
+};
+
 const getProfileById = async (userId) => {
   try {
     const obj = await db.UsersProfile.findAll({
@@ -104,22 +119,10 @@ const getProfileById = async (userId) => {
   }
 };
 
-const channelInfo = async (channelId) => {
+const getChannelInfo = async (channelId) => {
   try {
     const obj = await db.Channels.findByPk(channelId);
     return obj?.dataValues;
-  } catch (error) {
-    console.trace("error", error);
-    throw "Db error while executing query";
-  }
-};
-
-const channelInfoByUserId = async (userId) => {
-  try {
-    const obj = await db.Channels.findAll({
-      where: { userId: userId },
-    });
-    return obj?.[0]?.dataValues;
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";
@@ -158,10 +161,10 @@ const getPdfReport = async (body) => {
 };
 
 export {
+  getUserCredentials,
   createNewUser,
   deleteUserById,
   getProfileById,
   getPdfReport,
-  channelInfo,
-  channelInfoByUserId,
+  getChannelInfo,
 };

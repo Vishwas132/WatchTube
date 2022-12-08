@@ -1,5 +1,5 @@
 import db from "../models/index.js";
-import { channelInfo } from "./user.js";
+import { getChannelInfo } from "./user.js";
 
 const getSubscribers = async (channelId) => {
   try {
@@ -15,7 +15,7 @@ const getSubscribers = async (channelId) => {
 
 const subscribe = async (body) => {
   try {
-    const channelData = await channelInfo(body.channelId);
+    const channelData = await getChannelInfo(body.channelId);
     if (channelData.userId === String(body.userId)) return;
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Subscriptions.create({

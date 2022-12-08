@@ -21,7 +21,7 @@ const getUserProfile = async (req, res) => {
   try {
     const { email } = req.body;
     const userObj = await user.getProfileById(email);
-    if (userObj === undefined) return res.sendStatus(404);
+    if (!userObj) return res.sendStatus(404);
     return res.status(200).json(userObj);
   } catch (error) {
     console.trace("error", error);
@@ -56,10 +56,10 @@ const generateUserReport = async (req, res) => {
   }
 };
 
-const getChannelInfo = async (req, res) => {
+const channelInfo = async (req, res) => {
   try {
     const { channelId } = req.params;
-    let channelObj = await user.channelInfo(channelId);
+    let channelObj = await user.getChannelInfo(channelId);
     if (channelObj === undefined) return res.sendStatus(404);
     if (channelObj.userId !== String(req.body.userId)) {
       let { userId, ...newChannelObj } = channelObj;
@@ -77,5 +77,5 @@ export {
   signupUser,
   deleteUser,
   generateUserReport,
-  getChannelInfo,
+  channelInfo,
 };

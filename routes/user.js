@@ -15,10 +15,6 @@ user.delete("/delete", sessionAuthenticate, controller.deleteUser);
 
 user.get("/profile/report", sessionAuthenticate, controller.generateUserReport);
 
-user.post(
-  "/channel/:channelId",
-  sessionAuthenticate,
-  controller.getChannelInfo
-);
+user.post("/channel/:channelId", sessionAuthenticate, controller.channelInfo);
 
 export default user;
