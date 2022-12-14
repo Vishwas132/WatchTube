@@ -3,8 +3,15 @@ import route from "./routes/index.js";
 import db from "./models/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import Handlebars from "handlebars";
 import cons from "consolidate";
+import webpush from "web-push";
+import config from "./config/default.json" assert { type: "json" };
+
+const subject = config.vapidKey.subject;
+const publicKey = config.vapidKey.publicKey;
+const privateKey = config.vapidKey.privateKey;
+
+webpush.setVapidDetails(subject, publicKey, privateKey);
 
 const app = express();
 let port = 3000;

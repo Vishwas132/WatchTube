@@ -38,9 +38,9 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         defaultValue: 0,
       },
-      createdOn: {
-        field: "created_on",
-        type: DataTypes.DATEONLY,
+      createdAt: {
+        field: "created_at",
+        type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
     },

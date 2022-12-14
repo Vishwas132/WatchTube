@@ -22,7 +22,7 @@ async function fillValues() {
       const url = document.createElement("div");
       // url.href = "#";
       url.textContent = video.videoTitle;
-      url.id = video.id;
+      url.id = video.videoId;
       url.className = "videoUrl";
       div.append(url);
     });

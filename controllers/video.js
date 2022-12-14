@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import path from "path";
 import { createReadStream } from "fs";
 import { getChannelInfo, getUserProfile } from "../services/user.js";
+import webpush from "web-push";
 
 const uploadVideo = async (req, res) => {
   try {
@@ -14,17 +15,26 @@ const uploadVideo = async (req, res) => {
 
     const videoObj = await video.newVideo(req.body);
     const subscribers = await getSubscribers(req.body.channelId);
-    if (subscribers?.[0]?.dataValues?.subscriberId) {
-      let emails = [];
-      subscribers?.forEach(async (subscriber) => {
-        const profile = await getUserProfile(
-          subscriber?.dataValues?.subscriberId
-        );
-        emails.push(profile.email);
-      });
-      const messageIds = await sendMail(emails);
-      if (!messageIds) return req.sendStatus(404);
-    }
+    if (!subscribers?.[0]?.subscriberId) return res.sendStatus(404);
+    let emails = [];
+    subscribers?.forEach(async (subscriber) => {
+      // Get notification subscription details from database and send push notifications
+      const payload = JSON.stringify(req.body);
+      const subscription = JSON.parse(subscriber.subscriptionData);
+      if (subscription) {
+        const result = await webpush
+          .sendNotification(subscription, payload)
+          .catch(console.trace);
+      }
+      //
+      const profile = await getUserProfile(
+        subscriber?.dataValues?.subscriberId
+      );
+      emails.push(profile.email);
+    });
+    const messageIds = await sendMail(emails);
+    if (!messageIds) return req.sendStatus(404);
+
     return res.status(200).json(videoObj);
   } catch (error) {
     console.trace("error", error);
@@ -34,7 +44,9 @@ const uploadVideo = async (req, res) => {
 
 const getAllVideos = async (req, res) => {
   try {
-    const videosObj = await video.getAllVideos();
+    const { page, limit } = req.query;
+    const videosObj = await video.getAllVideos(page, limit);
+    // console.log("utc to localtime", new Date(videosObj[0].createdAt + " UTC"));
     return res.status(200).json(videosObj);
   } catch (error) {
     console.trace("error", error);
@@ -44,13 +56,13 @@ const getAllVideos = async (req, res) => {
 
 const getVideoById = async (req, res) => {
   try {
-    const { videoId } = req.params;
-    const range = req.headers.range;
+    // Check range header
+    const range = req?.headers?.range;
     if (!range) {
       res.status(400).send("Requires Range header");
     }
 
-    const videoObj = await video.getVideoById(videoId);
+    const videoObj = await video.getVideoById(req?.params?.videoId);
     if (!videoObj) return res.sendStatus(404);
 
     // get video stats

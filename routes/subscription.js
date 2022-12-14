@@ -4,8 +4,26 @@ import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const subscription = Router();
 
-subscription.post("/subscribe", sessionAuthenticate, controller.subscribe);
+subscription.post(
+  "/subscribe",
+  sessionAuthenticate,
+  controller.subscribeChannel
+);
 
-subscription.post("/unsubscribe", sessionAuthenticate, controller.unsubscribe);
+subscription.post(
+  "/unsubscribe",
+  sessionAuthenticate,
+  controller.unsubscribeChannel
+);
+
+subscription.post(
+  "/notifications/subscribe",
+  controller.subscribeToNotifications
+);
+
+subscription.post(
+  "/notifications/unsubscribe",
+  controller.unsubscribeToNotifications
+);
 
 export default subscription;

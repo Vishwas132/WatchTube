@@ -21,9 +21,9 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      createdOn: {
-        field: "created_on",
-        type: DataTypes.DATEONLY,
+      createdAt: {
+        field: "created_at",
+        type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
       },
     },

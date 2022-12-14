@@ -10,6 +10,6 @@ client.messages
   .create({
     body: "Hello from Node",
     to: "+918923267778", // Text this number
-    from: "+15109014980", // From a valid Twilio number
+    from: config.twilio.phoneNumber, // From a valid Twilio number
   })
   .then((message) => console.log(message.sid));

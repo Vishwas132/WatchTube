@@ -36,10 +36,10 @@ export default (sequelize, DataTypes) => {
   );
 
   Channels.associate = function (model) {
-    const { Users, Subscriptions, Videos } = model;
+    const { UsersProfile, Subscriptions, Videos } = model;
 
-    Channels.belongsTo(Users, {
-      as: "Users",
+    Channels.belongsTo(UsersProfile, {
+      as: "UsersProfile",
       foreignKey: "userId",
       onDelete: "CASCADE",
     });

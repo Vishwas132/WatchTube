@@ -10,7 +10,7 @@ const sessionAuthenticate = async (req, res, next) => {
     if (
       !userObj?.email ||
       !userObj?.signedIn ||
-      String(req?.body?.userId) !== userObj?.userId
+      String(req?.body?.userId || req?.params?.userId) !== userObj?.userId
     ) {
       return res.sendStatus(404);
     }

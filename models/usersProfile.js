@@ -58,10 +58,17 @@ export default (sequelize, DataTypes) => {
   );
 
   UsersProfile.associate = function (model) {
-    const { Users } = model;
+    const { Users, Channels } = model;
 
     UsersProfile.belongsTo(Users, {
       as: "Users",
+      foreignKey: "userId",
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    });
+
+    UsersProfile.hasOne(Channels, {
+      as: "Channels",
       foreignKey: "userId",
       onUpdate: "CASCADE",
       onDelete: "CASCADE",

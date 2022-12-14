@@ -107,8 +107,19 @@ const getUserCredentials = async (email) => {
 
 const getUserProfile = async (userId) => {
   try {
-    const obj = await db.UsersProfile.findByPk(userId);
-    return obj?.dataValues;
+    const obj2 = await db.UsersProfile.findAll({
+      where: { userId: userId },
+      include: [
+        {
+          model: db.Channels,
+          as: "Channels",
+          required: true,
+          attributes: ["channelId", "channelName", "description"],
+        },
+      ],
+    });
+    obj2[0].dataValues.Channels = obj2[0]?.dataValues?.Channels?.dataValues;
+    return obj2[0]?.dataValues;
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";

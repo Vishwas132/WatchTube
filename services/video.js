@@ -19,9 +19,13 @@ const newVideo = async (body) => {
   }
 };
 
-const getAllVideos = async () => {
+const getAllVideos = async (offset = 0, limit = 10) => {
   try {
-    const obj = await db.Videos.findAll();
+    const obj = await db.Videos.findAll({
+      offset: offset,
+      limit: limit,
+      raw: true,
+    });
     return obj;
   } catch (error) {
     console.trace("error", error);
@@ -41,7 +45,7 @@ const getVideoById = async (videoId) => {
 
 const deleteVideo = async (body) => {
   try {
-    const videoUrl = (await getVideo(body.videoId))?.videoUrl;
+    const videoUrl = (await getVideoById(body.videoId))?.videoUrl;
     const result = await db.sequelize.transaction(async (t) => {
       const obj = await db.Videos.destroy({
         where: {

@@ -21,7 +21,9 @@ const getUserProfile = async (req, res) => {
   try {
     const userObj = await user.getUserProfile(req.params.userId);
     if (!userObj) return res.sendStatus(404);
-    return res.status(200).json(userObj);
+    const { Channels, ...newUserObj } = userObj;
+    Object.assign(newUserObj, Channels);
+    return res.status(200).json(newUserObj);
   } catch (error) {
     console.trace("error", error);
     return res.status(500).json(error);

@@ -12,6 +12,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
         primaryKey: true,
       },
+      subscriptionData: {
+        field: "subscription_data",
+        type: DataTypes.TEXT,
+      },
     },
     {
       schema: "data",
