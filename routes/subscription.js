@@ -4,6 +4,10 @@ import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const subscription = Router();
 
+subscription.get("/", (req, res) => {
+  res.render("index");
+});
+
 subscription.post(
   "/subscribe",
   sessionAuthenticate,

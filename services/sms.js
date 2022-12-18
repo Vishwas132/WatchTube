@@ -5,11 +5,13 @@ const authToken = config.twilio.authToken; // Your Auth Token from www.twilio.co
 
 import twilio from "twilio";
 const client = twilio(accountSid, authToken);
+console.log("client", client);
 
-client.messages
-  .create({
-    body: "Hello from Node",
-    to: "+918923267778", // Text this number
-    from: config.twilio.phoneNumber, // From a valid Twilio number
-  })
-  .then((message) => console.log(message.sid));
+const message = await client.messages.create({
+  body: "Hello from Node",
+  to: "+919999999999", // Text this number
+  from: config.twilio.phoneNumber, // From a valid Twilio number
+});
+
+console.log("message", message);
+console.log(message.sid);

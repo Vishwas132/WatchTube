@@ -5,7 +5,6 @@ export default (sequelize, DataTypes) => {
       userId: {
         field: "user_id",
         type: DataTypes.BIGINT,
-        allowNull: false,
         primaryKey: true,
       },
       username: {

@@ -59,8 +59,8 @@ const getPdfReport = async (req, res) => {
 
 const getChannelInfo = async (req, res) => {
   try {
-    const { userId, channelId } = req.body;
-    let channelObj = await user.getChannelInfo(channelId);
+    const { userId } = req.body;
+    let channelObj = await user.getChannelInfo(userId);
     if (channelObj === undefined) return res.sendStatus(404);
     if (channelObj.userId !== String(userId)) {
       let { channelOwnerId, ...newChannelObj } = channelObj;

@@ -10,6 +10,7 @@ import hb from "handlebars";
 import path from "path";
 import fsp from "fs/promises";
 import { getAllVideos } from "./video.js";
+import { createUserState } from "./userState.js";
 
 const newUser = async (body) => {
   try {
@@ -46,7 +47,7 @@ const newUserProfile = async (body) => {
 const newChannel = async (body) => {
   try {
     const obj = await db.Channels.create(body);
-    return obj;
+    return obj?.[0]?.dataValues;
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";
@@ -60,7 +61,9 @@ const signupUser = async (body) => {
       body.userId = userObj.userId;
       await newUserProfile(body);
       if (!body?.channelName) body.channelName = body.username;
-      await newChannel(body);
+      const channelObj = await newChannel(body);
+      userObj.channelId = channelObj?.channelId;
+      await createUserState(userObj.userId);
       return userObj;
     });
     return result;
@@ -126,10 +129,13 @@ const getUserProfile = async (userId) => {
   }
 };
 
-const getChannelInfo = async (channelId) => {
+const getChannelInfo = async (userId) => {
   try {
-    const obj = await db.Channels.findByPk(channelId);
-    return obj?.dataValues;
+    const obj = await db.Channels.findAll({
+      where: { userId: userId },
+      raw: true,
+    });
+    return obj?.[0];
   } catch (error) {
     console.trace("error", error);
     throw "Db error while executing query";

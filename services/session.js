@@ -5,7 +5,7 @@ import {
   verifyRefreshToken,
 } from "../utils/utils.js";
 import db from "../models/index.js";
-import { getUserCredentials } from "./user.js";
+import { getChannelInfo, getUserCredentials } from "./user.js";
 
 const signInUser = async (body) => {
   try {
@@ -17,8 +17,10 @@ const signInUser = async (body) => {
     const tokenObj = createAccessToken({ email });
     const refreshToken = createRefreshToken({ email });
     await updateRefreshToken(userId, refreshToken);
+    const { channelId } = await getChannelInfo(userId);
     return {
       userId: userId,
+      channelId: channelId,
       accessToken: tokenObj.accessToken,
       accessTokenExpiry: tokenObj.accessTokenExpiry,
       refreshToken: refreshToken,

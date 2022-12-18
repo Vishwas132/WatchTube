@@ -39,7 +39,13 @@ export default (sequelize, DataTypes) => {
   );
 
   Users.associate = function (model) {
-    const { UsersProfile, Comments, Favorites, Subscriptions } = model;
+    const {
+      UsersProfile,
+      Comments,
+      Favorites,
+      Subscriptions,
+      UserCurrentState,
+    } = model;
 
     Users.hasOne(UsersProfile, {
       as: "UsersProfile",
@@ -62,6 +68,12 @@ export default (sequelize, DataTypes) => {
     Users.hasMany(Subscriptions, {
       as: "Subscriptions",
       foreignKey: "subscriberId",
+      onDelete: "CASCADE",
+    });
+
+    Users.hasOne(UserCurrentState, {
+      as: "UserCurrentState",
+      foreignKey: "userId",
       onDelete: "CASCADE",
     });
   };

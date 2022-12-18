@@ -1,12 +1,14 @@
-import config from "../../config/default.json" assert { type: "json" };
+// import config from "../config/default.json" assert { type: "json" };
 
 async function registerServiceWorker() {
+  const vapidPublicKey =
+    "BIV9_UVaT-keQGZeBLFfSC3qT4UqtnYjV-hFpI7V9St5NAMn_pFtHTVixbe2wc6D_nMqNryRIt3YUx9fIKw4gm8";
   const register = await navigator.serviceWorker.register("worker.js", {
     scope: "/view/pages/",
   });
   const subscription = await register.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: config.vapidKey.publicKey,
+    applicationServerKey: vapidPublicKey,
   });
   return subscription;
 }
@@ -19,6 +21,7 @@ const subscribeToNotifications = async () => {
     console.log("permission", permission);
     if (permission === "granted") {
       subscription = await registerServiceWorker().catch(console.log);
+      if (!subscription) return;
       const obj = await fetch(
         "http://localhost:3000/subscription/notifications/subscribe",
         {
@@ -33,6 +36,7 @@ const subscribeToNotifications = async () => {
           },
         }
       );
+      if (obj) button.textContent = "Unsubscribe";
     }
   }
 };
@@ -46,6 +50,7 @@ const unsubscribeToNotifications = async () => {
     if (!subscription) return;
     const unsubscribed = await subscription.unsubscribe();
     console.log("unsubscribed", unsubscribed);
+    if (!unsubscribed) return;
     const obj = await fetch(
       "http://localhost:3000/subscription/notifications/unsubscribe",
       {
@@ -60,11 +65,31 @@ const unsubscribeToNotifications = async () => {
         },
       }
     );
+    if (obj) button.textContent = "Subscribe";
   }
 };
 
-const subscribeButton = document.querySelector("#subscribe");
-subscribeButton.addEventListener("click", subscribeToNotifications);
+async function addButtonText() {
+  try {
+    if ("serviceWorker" in navigator) {
+      const register = await navigator.serviceWorker.register("worker.js", {
+        scope: "/view/pages/",
+      });
+      console.log("register", register);
+      const subscription = await register.pushManager.getSubscription();
+      if (!subscription) button.textContent = "Subscribe";
+      else button.textContent = "Unsubscribe";
+      console.log("button.textContent", button.textContent);
+    }
+  } catch (error) {
+    console.log("error", error);
+  }
+}
 
-const unsubscribeButton = document.querySelector("#unsubscribe");
-unsubscribeButton.addEventListener("click", unsubscribeToNotifications);
+const button = document.querySelector("button");
+window.addEventListener("DOMContentLoaded", addButtonText);
+
+button.addEventListener("click", () => {
+  if (button.textContent === "Subscribe") subscribeToNotifications();
+  if (button.textContent === "Unsubscribe") unsubscribeToNotifications();
+});

@@ -26,7 +26,7 @@ export default async function sendMail(emails) {
     let info = await transporter.sendMail({
       from: '"Nodemailer" <v.lekhwar123@gmail.com>', // sender address
       to: emails, // list of receivers
-      subject: "Hi ✔", // Subject line
+      subject: "New video", // Subject line
       text: "New text", // plain text body
       html: "<b>Hello world?</b>", // html body
     });

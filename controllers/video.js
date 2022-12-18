@@ -1,40 +1,13 @@
 import * as video from "../services/video.js";
-import sendMail from "../services/mail.js";
-import { getSubscribers } from "../services/subscription.js";
 import fs from "fs/promises";
 import path from "path";
 import { createReadStream } from "fs";
-import { getChannelInfo, getUserProfile } from "../services/user.js";
-import webpush from "web-push";
 
 const uploadVideo = async (req, res) => {
   try {
     req.body.videoUrl = req.file.filename;
-    const obj = await getChannelInfo(req.body.channelId);
-    if (obj.channelId !== req.body.channelId) return res.sendStatus(404);
-
-    const videoObj = await video.newVideo(req.body);
-    const subscribers = await getSubscribers(req.body.channelId);
-    if (!subscribers?.[0]?.subscriberId) return res.sendStatus(404);
-    let emails = [];
-    subscribers?.forEach(async (subscriber) => {
-      // Get notification subscription details from database and send push notifications
-      const payload = JSON.stringify(req.body);
-      const subscription = JSON.parse(subscriber.subscriptionData);
-      if (subscription) {
-        const result = await webpush
-          .sendNotification(subscription, payload)
-          .catch(console.trace);
-      }
-      //
-      const profile = await getUserProfile(
-        subscriber?.dataValues?.subscriberId
-      );
-      emails.push(profile.email);
-    });
-    const messageIds = await sendMail(emails);
-    if (!messageIds) return req.sendStatus(404);
-
+    const videoObj = await video.uploadVideo(req.body);
+    if (videoObj?.message === "Not Found") return res.sendStatus(404);
     return res.status(200).json(videoObj);
   } catch (error) {
     console.trace("error", error);

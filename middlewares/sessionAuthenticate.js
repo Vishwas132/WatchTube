@@ -6,14 +6,11 @@ const sessionAuthenticate = async (req, res, next) => {
     const token = getAccessToken(req);
     const payload = verifyAccessToken(token);
     if (!payload?.email) return res.sendStatus(401);
+    let userId = req?.body?.userId;
+    if (!userId) userId = req?.params?.userId;
+    if (!userId) return res.sendStatus(400);
     const userObj = await getUserCredentials(payload.email);
-    if (
-      !userObj?.email ||
-      !userObj?.signedIn ||
-      String(req?.body?.userId || req?.params?.userId) !== userObj?.userId
-    ) {
-      return res.sendStatus(404);
-    }
+    if (!userObj?.userId || !userObj?.signedIn) return res.sendStatus(404);
     req.body.email = payload.email;
     next();
   } catch (error) {

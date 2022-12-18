@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(route);
 
-app.use(express.static("/view/"));
+app.use(express.static(process.cwd() + "/view/"));
 app.set("view engine", "handlebars");
 app.set("views", "./view/pages/");
 app.engine("handlebars", cons.handlebars);

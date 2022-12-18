@@ -1,11 +1,12 @@
 import * as session from "../services/session.js";
 import { getRefreshToken } from "../utils/utils.js";
+import config from "../config/default.json" assert { type: "json" };
 
 const signInUser = async (req, res) => {
   try {
     const { refreshToken, ...tokenObj } = await session.signInUser(req.body);
     res.cookie("sessionToken", refreshToken, {
-      maxAge: 86400000,
+      maxAge: config.app.sessionExpiresInMilliseconds,
       sameSite: "none",
       secure: true,
       httpOnly: true,
