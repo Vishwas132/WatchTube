@@ -1,7 +1,7 @@
 import addNavButtons from "./navButtons.js";
 
-async function fetchVideos() {
-  const response = await fetch(`http://localhost:3000/video/all`, {
+async function fetchVideos(url) {
+  const response = await fetch(url, {
     method: "GET",
     mode: "cors",
     headers: {
@@ -13,10 +13,16 @@ async function fetchVideos() {
 
 async function fillValues() {
   addNavButtons();
-  const response = await fetchVideos();
+  const searchField = document.querySelector("#video-search");
+  const textAt = document.URL.search("=");
+  searchField.value = document.URL.slice(textAt + 1);
+
+  const at = document.URL.search("search");
+  const url = `http://localhost:3000/video?${document.URL.slice(at)}`;
+
+  const response = await fetchVideos(url);
   if (response.status === 200) {
     const div = document.querySelector("div");
-
     const videos = await response.json();
     videos.forEach((video) => {
       const url = document.createElement("div");
@@ -41,12 +47,5 @@ async function redirectPage(evt) {
   localStorage.setItem("videoId", evt.srcElement.id);
   location.assign(`id/${evt.srcElement.id}`);
 }
-
-const searchField = document.querySelector("#video-search");
-const searchForm = document.querySelector("#search");
-
-searchForm.addEventListener("submit", (e) => {
-  if (searchField.value.length === 0) e.preventDefault();
-});
 
 window.addEventListener("DOMContentLoaded", fillValues);

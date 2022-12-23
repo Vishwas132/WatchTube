@@ -146,7 +146,10 @@ const getPdfReport = async ({ userId }) => {
   try {
     let data = await getUserProfile(userId);
     const content = (
-      await fsp.readFile(process.cwd() + "/view/pages/profile.html", "utf8")
+      await fsp.readFile(
+        process.cwd() + "/view/pages/profile.handlebars",
+        "utf8"
+      )
     ).toString();
     const pathName = path.resolve(process.cwd() + "/files/reports/display.pdf");
     const template = hb.compile(content, { strict: true });

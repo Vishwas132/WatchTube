@@ -11,8 +11,8 @@ self.addEventListener("notificationclick", function (event) {
   event.waitUntil(
     clients.matchAll({ type: "window" }).then((windowClients) => {
       // Check if there is already a window/tab open with the target URL
-      for (var i = 0; i < windowClients.length; i++) {
-        var client = windowClients[i];
+      for (const i = 0; i < windowClients.length; i++) {
+        let client = windowClients[i];
         // If so, just focus it.
         if (client.url === url && "focus" in client) {
           return client.focus();

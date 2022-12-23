@@ -2,7 +2,7 @@ import addNavButtons from "./navButtons.js";
 
 async function fetchVideo() {
   const response = await fetch(
-    `http://localhost:3000/video/${localStorage.getItem("videoId")}`,
+    `http://localhost:3000/video/id/${localStorage.getItem("videoId")}`,
     {
       method: "GET",
       mode: "cors",
@@ -20,7 +20,7 @@ async function fillValues() {
   const response = await fetchVideo();
   if (response.status === 206) {
     const video = document.querySelector("video");
-    video.src = `http://localhost:3000/video/${localStorage.getItem(
+    video.src = `http://localhost:3000/video/id/${localStorage.getItem(
       "videoId"
     )}`;
   } else {

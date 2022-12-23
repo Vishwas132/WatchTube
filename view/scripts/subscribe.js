@@ -3,9 +3,12 @@
 async function registerServiceWorker() {
   const vapidPublicKey =
     "BIV9_UVaT-keQGZeBLFfSC3qT4UqtnYjV-hFpI7V9St5NAMn_pFtHTVixbe2wc6D_nMqNryRIt3YUx9fIKw4gm8";
-  const register = await navigator.serviceWorker.register("worker.js", {
-    scope: "/view/pages/",
-  });
+  const register = await navigator.serviceWorker.register(
+    "../pages/worker.js",
+    {
+      scope: "/view/pages/",
+    }
+  );
   const subscription = await register.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: vapidPublicKey,
@@ -72,9 +75,12 @@ const unsubscribeToNotifications = async () => {
 async function addButtonText() {
   try {
     if ("serviceWorker" in navigator) {
-      const register = await navigator.serviceWorker.register("worker.js", {
-        scope: "/view/pages/",
-      });
+      const register = await navigator.serviceWorker.register(
+        "../pages/worker.js",
+        {
+          scope: "/view/pages/",
+        }
+      );
       console.log("register", register);
       const subscription = await register.pushManager.getSubscription();
       if (!subscription) button.textContent = "Subscribe";

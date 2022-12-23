@@ -2,15 +2,18 @@ import addNavButtons from "./navButtons.js";
 import checkTokenValidity from "./refreshToken.js";
 
 async function fetchProfile() {
-  const response = await fetch("http://localhost:3000/user/profile", {
-    method: "GET",
-    mode: "cors",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  });
+  const response = await fetch(
+    `http://localhost:3000/user/profile/${localStorage.getItem("userId")}`,
+    {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
   return response;
 }
 

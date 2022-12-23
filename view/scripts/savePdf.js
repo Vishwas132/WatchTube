@@ -2,7 +2,9 @@ import checkTokenValidity from "./refreshToken.js";
 
 async function fetchPdf() {
   const response = await fetch(
-    `http://localhost:3000/user/profile/report?url=${document.URL}`,
+    `http://localhost:3000/user/profile/report/${localStorage.getItem(
+      "userId"
+    )}`,
     {
       method: "GET",
       mode: "cors",

@@ -1,12 +1,11 @@
 async function refreshAccessToken() {
   const response = await fetch("http://localhost:3000/session/token", {
-    method: "POST",
+    method: "GET",
     mode: "cors",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email: localStorage.getItem("email") }),
   });
   return response;
 }

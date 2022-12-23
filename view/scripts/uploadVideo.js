@@ -18,13 +18,14 @@ async function uploadVideo(evt) {
   evt.preventDefault();
   const formData = new FormData(videoUploadForm);
   formData.set("userId", localStorage.getItem("userId"));
+  formData.set("channelId", localStorage.getItem("channelId"));
   checkTokenValidity();
 
   const response = await sendData(formData);
 
   if (response.status === 200) {
     const data = await response.json();
-    console.log("data", data);
+    window.alert("Video uploaded successfully");
   } else {
     console.log("response.status", response.status);
   }

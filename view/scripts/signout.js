@@ -9,6 +9,9 @@ async function logOut() {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
+    body: JSON.stringify({
+      userId: localStorage.getItem("userId"),
+    }),
   });
   return response;
 }
@@ -19,7 +22,7 @@ async function logOutUser(evt) {
   const response = await logOut();
   if (response.status === 200) {
     localStorage.clear();
-    location.assign("http://127.0.0.1:5500/view/pages/homepage.html");
+    location.assign("/");
   } else {
     console.trace("response", response);
   }

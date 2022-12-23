@@ -14,7 +14,8 @@ async function signinUser(evt) {
     localStorage.setItem("accessTokenExpiry", data.accessTokenExpiry);
     localStorage.setItem("email", formData.get("email"));
     localStorage.setItem("userId", data.userId);
-    window.location.assign("/view/pages/homepage.html");
+    localStorage.setItem("channelId", data.channelId);
+    window.location.assign("/");
   } else {
     console.log("response.status", response.status);
   }

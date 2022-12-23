@@ -10,10 +10,30 @@ const route = Router();
 
 route.get("/", (req, res) => {
   try {
-    return res.sendStatus(200);
+    return res.render("homepage");
   } catch (error) {
     throw error;
   }
+});
+
+route.get("/signin", (req, res) => {
+  return res.render("signin");
+});
+
+route.get("/profile", (req, res) => {
+  return res.render("profile");
+});
+
+route.get("/upload", (req, res) => {
+  return res.render("videoUploadPage");
+});
+
+route.get("/results", (req, res) => {
+  return res.render("searchResults");
+});
+
+route.get("/id/:videoId", (req, res) => {
+  return res.render("video");
 });
 
 route.use("/user", user);

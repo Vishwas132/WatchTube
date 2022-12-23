@@ -5,9 +5,11 @@ import sessionAuthenticate from "../middlewares/sessionAuthenticate.js";
 
 const video = Router();
 
+video.get("/", controller.getVideoByQuery);
+
 video.get("/all", controller.getAllVideos);
 
-video.get("/:videoId", controller.getVideoById);
+video.get("/id/:videoId", controller.getVideoById);
 
 video.post(
   "/upload",

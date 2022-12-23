@@ -13,7 +13,8 @@ async function signupUser(evt) {
     localStorage.setItem("accessToken", data.accessToken);
     localStorage.setItem("accessTokenExpiry", data.accessTokenExpiry);
     localStorage.setItem("email", formData.get("email"));
-    localStorage.setItem("userId", data.id);
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("channelId", data.channelId);
     window.location.assign("/view/pages/homepage.html");
   } else {
     console.log("response.status", response.status);
