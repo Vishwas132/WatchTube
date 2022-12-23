@@ -86,6 +86,26 @@ const getVideoById = async (videoId) => {
   }
 };
 
+const getVideoByQuery = async (query, offset = 0, limit = 10) => {
+  try {
+    const obj = await db.Videos.findAll({
+      offset: offset,
+      limit: limit,
+      raw: true,
+      where: db.sequelize.where(
+        db.sequelize.fn("lower", db.sequelize.col("video_title")),
+        {
+          [db.Sequelize.Op.like]: `%${query.toLowerCase()}%`,
+        }
+      ),
+    });
+    return obj;
+  } catch (error) {
+    console.trace("error", error);
+    throw "Error while querying database";
+  }
+};
+
 const deleteVideo = async (body) => {
   try {
     const videoUrl = (await getVideoById(body.videoId))?.videoUrl;
@@ -163,6 +183,7 @@ export {
   uploadVideo,
   getAllVideos,
   getVideoById,
+  getVideoByQuery,
   deleteVideo,
   likeVideo,
   dislikeVideo,

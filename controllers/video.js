@@ -73,6 +73,17 @@ const getVideoById = async (req, res) => {
   }
 };
 
+const getVideoByQuery = async (req, res) => {
+  try {
+    const query = req?.query?.["search-query"];
+    if (!query) return res.sendStatus(400);
+    const resultObj = await video.getVideoByQuery(query);
+    return res.status(200).json(resultObj);
+  } catch (error) {
+    console.trace("error", error);
+  }
+};
+
 const deleteVideo = async (req, res) => {
   try {
     const videoObj = await video.deleteVideo(req.body);
@@ -113,4 +124,5 @@ export {
   deleteVideo,
   likeVideo,
   dislikeVideo,
+  getVideoByQuery,
 };
