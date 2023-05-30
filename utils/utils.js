@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import config from "../config/default.json" assert { type: "json" };
+import config from "config";
 import crypto from "crypto";
 import util from "util";
 import fs from "fs/promises";
@@ -21,8 +21,8 @@ const verifyPassword = async (password, passwordHash) => {
 };
 
 const createAccessToken = (data) => {
-  const token = jwt.sign(data, config.app.accessTokenSecretKey, {
-    expiresIn: config.app.tokenExpiresInSeconds,
+  const token = jwt.sign(data, config.get("app.accessTokenSecretKey"), {
+    expiresIn: config.get("app.tokenExpiresInSeconds"),
   });
   const payload = jwt.decode(token);
   return {
@@ -32,15 +32,15 @@ const createAccessToken = (data) => {
 };
 
 const createRefreshToken = (data) => {
-  return jwt.sign(data, config.app.refreshTokenSecretKey);
+  return jwt.sign(data, config.get("app.refreshTokenSecretKey"));
 };
 
 const verifyAccessToken = (token) => {
-  return jwt.verify(token, config.app.accessTokenSecretKey);
+  return jwt.verify(token, config.get("app.accessTokenSecretKey"));
 };
 
 const verifyRefreshToken = (token) => {
-  return jwt.verify(token, config.app.refreshTokenSecretKey);
+  return jwt.verify(token, config.get("app.refreshTokenSecretKey"));
 };
 
 const getRefreshToken = (cookies) => {

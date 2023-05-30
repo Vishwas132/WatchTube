@@ -3,8 +3,8 @@ import { basename, dirname } from "path";
 import { Sequelize, DataTypes } from "sequelize";
 import { fileURLToPath } from "url";
 
-import jsonObj from "./../config/default.json" assert { type: "json" };
-const { database, username, password, ...dbConfig } = jsonObj.database;
+import jsonObj from "config";
+const { database, username, password, ...dbConfig } = jsonObj.get("database");
 
 import { createNamespace } from "cls-hooked";
 const cls = createNamespace("youtube_backend");

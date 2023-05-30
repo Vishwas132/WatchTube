@@ -5,11 +5,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import cons from "consolidate";
 import webpush from "web-push";
-import config from "./config/default.json" assert { type: "json" };
+import config from "config";
 
-const subject = config.vapidKey.subject;
-const publicKey = config.vapidKey.publicKey;
-const privateKey = config.vapidKey.privateKey;
+const subject = config.get("vapidKey.subject");
+const publicKey = config.get("vapidKey.publicKey");
+const privateKey = config.get("vapidKey.privateKey");
 
 webpush.setVapidDetails(subject, publicKey, privateKey);
 
@@ -33,9 +33,8 @@ app.set("views", "./view/pages/");
 app.engine("handlebars", cons.handlebars);
 
 db.sequelize
-  // .sync({alter: true})
-  // .sync({force: true})
-  .authenticate()
+.authenticate()
+  // .then(() => db.sequelize.sync({alter: true}))
   .then(() => {
     return app.listen(port, () => {
       console.log(`Server listning on at http://localhost:${port}`);

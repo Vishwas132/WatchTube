@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Vishwas132/youtube#readme",
   "dependencies": {
+    "config": "^3.3.9",
     "consolidate": "^0.16.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

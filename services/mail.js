@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import secrets from "../config/default.json" assert { type: "json" };
+import secrets from "config";
 
 // async..await is not allowed in global scope, must use a wrapper
 export default async function sendMail(emails) {
@@ -15,7 +15,7 @@ export default async function sendMail(emails) {
       secure: false, // true for 465, false for other ports
       auth: {
         user: "v.lekhwar123@gmail.com",
-        pass: secrets.email.password,
+        pass: secrets.get("email.password"),
       },
       // tls: {
       //   rejectUnauthorized: false,

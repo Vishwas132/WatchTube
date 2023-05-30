@@ -1,11 +1,11 @@
 import * as user from "../services/user.js";
-import config from "../config/default.json" assert { type: "json" };
+import config from "config";
 
 const signupUser = async (req, res) => {
   try {
     const { refreshToken, ...userObj } = await user.signupUser(req.body);
     res.cookie("sessionToken", refreshToken, {
-      maxAge: config.app.sessionExpiresInMilliseconds,
+      maxAge: config.get("app.sessionExpiresInMilliseconds"),
       sameSite: "none",
       secure: true,
       httpOnly: true,

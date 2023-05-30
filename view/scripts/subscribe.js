@@ -1,4 +1,4 @@
-// import config from "../config/default.json" assert { type: "json" };
+// import config from "config";
 
 async function registerServiceWorker() {
   const vapidPublicKey =
